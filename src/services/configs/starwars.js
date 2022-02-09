@@ -3,7 +3,7 @@ export default {
         "host": "akabab.github.io",
         "roHost": "akabab.github.io",
         "protocol": "https",
-        "timeout": 5000,
+        "timeout": 3000,
         "pathPrefix": "/starwars-api/api",
         "credentials": 'omit'
     },

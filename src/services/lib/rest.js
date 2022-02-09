@@ -3,7 +3,7 @@ import buildUrl from '../../lib/url';
 export default async function rest(url, method, headers = {}, body, resourceConfig = {}) {
 	const resource = buildUrl(url);
 
-	const { credentials, format } = resourceConfig;
+	const { credentials, format, timeout = 1500 } = resourceConfig;
 
 	const settings = {
 		credentials,
@@ -15,7 +15,14 @@ export default async function rest(url, method, headers = {}, body, resourceConf
 		settings.body = body;
 	}
 
+	const controller = new AbortController();
+	const timeoutId = setTimeout(() => controller.abort(), timeout);
+	settings.signal = controller.signal;
+
+
 	const response = await fetch(resource, settings);
+
+	clearTimeout(timeoutId)
 
 	const { status, statusText } = (response || {});
 	const success = status >= 200 && status < 300;
