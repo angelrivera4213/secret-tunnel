@@ -1,4 +1,4 @@
-import State from '../../lib/State';
+import State from './State';
 
 class ReducerStore extends State {
 	constructor ({
@@ -25,6 +25,10 @@ class ReducerStore extends State {
 		if (newState !== this._state) {
 			this.setState(newState);
 		}
+	}
+
+	get storeName () {
+		return this._storeName;
 	}
 }
 

@@ -9,7 +9,7 @@ export function htmlToElement(html = '') {
     return template.content.firstChild;
 }
 
-export function render (value, container) {
+export default function render (value, container) {
 	if (value === undefined || value === null) {
 		const node = container?.firstChild;
 

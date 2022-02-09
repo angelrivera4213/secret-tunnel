@@ -1,6 +1,7 @@
-import { render } from './lib/component';
-import createReducerStore from './stores/lib/createReducerStore';
+import render from './lib/render';
 import Title from './components/Title';
+import AppContext from './context/AppContext';
+import MyReducerStore from './stores/MyReducerStore';
 
 // index.js is defered so no need for listener
 
@@ -9,49 +10,44 @@ render(Title({
 }), document.querySelector('#root'));
 
 
-const MyReducerStore = createReducerStore({
-	storeName: 'MyReducerStore',
-	initialState: {},
-	reducers: {
-		'UPDATE_NAME': (state, payload) => {
-			return {
-				...state,
-				name: payload?.name
-			}
-		},
-		'LOAD_STAR_WARS_CHARACTERS': (state, payload) => {
-			return {
-				...state,
-				characters: payload?.characters
-			};
-		}
+const appContext = new AppContext({
+	componentActionErrorHandler: function componentActionErrorHandler (context, payload, done) {
+		console.log('Component Action Error', payload);
 	}
 });
 
-MyReducerStore.addListener((state) => {
-	console.log('MyReducerStore emitted change', state);
+appContext.registerStores([
+	MyReducerStore
+]);
+
+const componentContext = appContext.getComponentContext();
+
+const store = componentContext.getStore(MyReducerStore);
+
+store.addListener((state) => {
+	console.log('MyReducerStore update', state);
 });
 
-MyReducerStore.addListener((state) => {
-	console.log('Listener 2 MyReducerStore emitted change', state);
-});
+function loadCharacters (context, payload, done) {
+	context.dispatch('LOAD_STAR_WARS_CHARACTERS', {
+		characters: ['ANAKIN', 'OBI_WAN', 'PALPATINE']
+	});
 
-MyReducerStore.onDispatch('UPDATE_NAME', {
-	name: 'Aang'
-});
+	done?.()
+}
 
-MyReducerStore.onDispatch('UPDATE_NAME', {
-	name: 'Katara'
-});
+function updateNameAction (context, payload, done) {
+	console.log('action context', context);
+	context.dispatch('UPDATE_NAME', {
+		name: payload?.name
+	});
 
-MyReducerStore.onDispatch('LOAD_STAR_WARS_CHARACTERS', {
-	characters: ['Anakin', 'Obi-Wan', 'Palpatine']
-});
+	context.executeAction(loadCharacters, {}, done);
+}
 
-MyReducerStore.onDispatch('RANDOM_EVENT', {
-	sup: ['Anakin', 'Obi-Wan', 'Palpatine']
+componentContext.executeAction(updateNameAction, {
+	name: 'ANGEL'
 });
-
 
 
 
