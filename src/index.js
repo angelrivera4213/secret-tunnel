@@ -2,6 +2,7 @@ import render from './lib/render';
 import Title from './components/Title';
 import AppContext from './context/AppContext';
 import MyReducerStore from './stores/MyReducerStore';
+import StarwarsService from './services/StarwarsService';
 
 // index.js is defered so no need for listener
 
@@ -29,11 +30,14 @@ store.addListener((state) => {
 });
 
 function loadCharacters (context, payload, done) {
-	context.dispatch('LOAD_STAR_WARS_CHARACTERS', {
-		characters: ['ANAKIN', 'OBI_WAN', 'PALPATINE']
+	StarwarsService.read(context, 'starwars.characters', {}).then(result => {
+		context.dispatch('LOAD_STAR_WARS_CHARACTERS', {
+			characters: result
+		});
+		done?.(null, result)
+	}).catch(err => {
+		done?.(err, )
 	});
-
-	done?.()
 }
 
 function updateNameAction (context, payload, done) {
@@ -48,6 +52,7 @@ function updateNameAction (context, payload, done) {
 componentContext.executeAction(updateNameAction, {
 	name: 'ANGEL'
 });
+
 
 
 
