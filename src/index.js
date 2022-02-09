@@ -7,7 +7,7 @@ import StarwarsService from './services/StarwarsService';
 // index.js is defered so no need for listener
 
 render(Title({
-	name: 'Secret Tunnel',
+	name: 'Look at console output',
 }), document.querySelector('#root'));
 
 
