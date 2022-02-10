@@ -1,60 +1,49 @@
 // import so bundler picks it up
 import './styles/global.css';
-
-import render from './lib/render';
-import Title from './components/Title';
+import App from './App';
 import AppContext from './context/AppContext';
 import MyReducerStore from './stores/MyReducerStore';
-import StarwarsService from './services/StarwarsService';
+import createHomeController from './controllers/createHomeController';
 
-// index.js is defered so no need for listener
-
-render(Title({
-	name: 'Look at console output',
-}), document.querySelector('#root'));
-
-
-const appContext = new AppContext({
-	componentActionErrorHandler: function componentActionErrorHandler (context, payload, done) {
-		console.log('Component Action Error', payload);
-	}
-});
-
-appContext.registerStores([
+AppContext.registerStores([
 	MyReducerStore
 ]);
+const componentContext = AppContext.getComponentContext();
 
-const componentContext = appContext.getComponentContext();
-
-const store = componentContext.getStore(MyReducerStore);
-
-store.addListener((state) => {
-	console.log('MyReducerStore update', state);
+const app = new App({
+	context: componentContext
 });
 
-function loadCharacters (context, payload, done) {
-	StarwarsService.read(context, 'starwars.characters', {}).then(result => {
-		context.dispatch('LOAD_STAR_WARS_CHARACTERS', {
-			characters: result
-		});
-		done?.(null, result)
-	}).catch(err => {
-		done?.(err, )
-	});
-}
+app.pushController(createHomeController());
 
-function updateNameAction (context, payload, done) {
-	console.log('action context', context);
-	context.dispatch('UPDATE_NAME', {
-		name: payload?.name
-	});
 
-	context.executeAction(loadCharacters, {}, done);
-}
+// // index.js is defered so no need for listener
+// function loadCharacters (context, payload, done) {
+// 	StarwarsService.read(context, 'starwars.characters', {}).then(result => {
+// 		context.dispatch('LOAD_STAR_WARS_CHARACTERS', {
+// 			characters: result
+// 		});
+// 		done?.(null, result)
+// 	}).catch(err => {
+// 		done?.(err, )
+// 	});
+// }
 
-componentContext.executeAction(updateNameAction, {
-	name: 'ANGEL'
-});
+// function updateNameAction (context, payload, done) {
+// 	console.log('action context', context);
+// 	context.dispatch('UPDATE_NAME', {
+// 		name: payload?.name
+// 	});
+
+// 	context.executeAction(loadCharacters, {}, done);
+// }
+
+// componentContext.executeAction(updateNameAction, {
+// 	name: 'ANGEL'
+// });
+
+
+
 
 
 

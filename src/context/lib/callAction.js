@@ -25,15 +25,15 @@ export default function (actionContext, action, payload, done) {
 			} catch (e) {
 				reject(e)
 			}
-		}, 0);
+		});
 	}).then(result => {
 		setImmediate(() => {
 			done?.(null, result);
-		}, 0);
+		});
 	}).catch(e => {
 		setImmediate(() => {
 			done?.(e);
-		}, 0);
+		});
 	});
 
 	return executeAction

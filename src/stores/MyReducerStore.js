@@ -16,5 +16,8 @@ export default createReducerStore({
 				characters: payload?.characters
 			};
 		}
+	},
+	getters: {
+		getState: state => state
 	}
 });

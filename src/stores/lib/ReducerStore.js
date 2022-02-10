@@ -4,12 +4,19 @@ class ReducerStore extends State {
 	constructor ({
 		storeName,
 		initialState,
-		reducers
+		reducers,
+		getters = {}
 	}) {
 		super(initialState);
 
 		this._storeName = storeName;
 		this._reducers = reducers;
+
+		Object.keys(getters).forEach(key => {
+			this[key] = () => {
+				getters[key]?.(this._state);
+			}
+		});
 	}
 
 
