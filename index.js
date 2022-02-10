@@ -12,6 +12,8 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + `/dist/index.html`);
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Application started and Listening on port ${port}`);
 });
+
+module.exports.server = server;

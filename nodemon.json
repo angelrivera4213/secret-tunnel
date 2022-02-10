@@ -1,0 +1,7 @@
+{
+    "exec": "npm run build:dev && node --inspect -r jumpseat index.js",
+    "ext": "json,js",
+    "watch": [
+        "src/"
+    ]
+}
