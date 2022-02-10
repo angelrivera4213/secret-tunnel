@@ -1,3 +1,5 @@
+import './styles/global.css'
+
 import render from './lib/render';
 import Title from './components/Title';
 import AppContext from './context/AppContext';
