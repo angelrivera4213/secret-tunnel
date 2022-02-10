@@ -1,4 +1,5 @@
-import './styles/global.css'
+// import so bundler picks it up
+import './styles/global.css';
 
 import render from './lib/render';
 import Title from './components/Title';

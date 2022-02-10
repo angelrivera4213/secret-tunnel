@@ -1,3 +1,4 @@
+import 'setimmediate';
 import Dispatcher from './lib/Dispatcher';
 import callAction from './lib/callAction';
 
@@ -43,9 +44,9 @@ export default class AppContext {
 								actionName: action?.displayName || action?.name,
 								err
 							}, function unhandledError (e) {
-								setTimeout(() => {
+								setImmediate(() => {
 									throw e;
-								}, 0);
+								});
 							})
 						}
 					})
