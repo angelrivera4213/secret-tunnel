@@ -17,8 +17,6 @@ class EventEmitter {
         }
 
         this._observers.get(type).add(listener);
-
-        console.log('addEventListener.this._observers', this._observers)
     }
 
     removeEventListener (type, listener) {
@@ -29,8 +27,6 @@ class EventEmitter {
         const listeners = this._observers.get(type);
 
         listeners.delete(listener);
-
-        console.log('removeEventListener.this._observers', this._observers)
     }
 
     emit (type, data) {
@@ -41,7 +37,6 @@ class EventEmitter {
         const listeners = this._observers.get(type);
 
         [...listeners].forEach(listener => {
-            console.log('listener', listener);
             const isFunction = typeof listener === 'function';
             const isEventListener = typeof listener === 'object' && typeof listener.handleEvent === 'function';
 

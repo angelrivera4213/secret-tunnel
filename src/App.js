@@ -11,6 +11,12 @@ class App {
 
 	_getAppContext () {
 		if (!this._appContext) {
+			// TODO: Create Page/Layout Components and create a PageStack class
+			// Could register Layout Comonents and have a config containing the layout type
+			// and the associated controllers in the layout. 
+			// Controllers would need to be registered as well
+			// Layouts could then be rendered as Pages and stored on a PageStack or PageCache
+			
 			this._appContext = {
 				page: {
 					pushPage: (...args) => this.pushController(...args),

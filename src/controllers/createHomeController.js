@@ -1,11 +1,29 @@
 import Controller from './lib/Controller';
 import HomeView from '../views/Home';
 
+// stores
+import HomeStore from '../stores/HomeStore';
+
+// Actions
+import { loadHome } from '../actions/stores/home';
+
 export class HomeController extends Controller {
-	mounted () {
-		this._view.bindButtonPush(this.handlePush);
-		this._view.bindButtonPop(this.handlePop);
+	viewMounted () {
+		const homeStore = this._context.getStore(HomeStore);
+		homeStore.addListener(this._homeStoreListener);
+
+		this._context.executeAction(loadHome, {});
 	}
+
+	viewWillUnmount () {
+		const homeStore = this._context.getStore(HomeStore);
+		homeStore.removeListener(this._homeStoreListener);
+	}
+
+	_homeStoreListener = () => {
+		const homeStore = this._context.getStore(HomeStore);
+		this._view.loadHome(homeStore.getState()?.data);
+	};
 
 	handlePush = () => {
     	console.log('doing push');

@@ -1,15 +1,15 @@
 export default {
     "defaults": {
-        "host": "akabab.github.io",
-        "roHost": "akabab.github.io",
+        "host": "cd-static.bamgrid.com",
+        "roHost": "cd-static.bamgrid.com",
         "protocol": "https",
         "timeout": 3000,
-        "pathPrefix": "/starwars-api/api",
+        "pathPrefix": "/dp-117731241344",
         "credentials": 'omit'
     },
     "resources": {
-        "starwars.characters": {
-            "path": "/all.json",
+        "disney.home": {
+            "path": "/home.json",
             "params": {},
             "query": []
         }

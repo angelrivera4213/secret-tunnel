@@ -1,7 +1,7 @@
 import BaseService from './lib/BaseService';
-import config from './configs/starwars.js';
+import config from './configs/disney.js';
 
 export default new BaseService({
-	name: 'starwars',
+	name: 'disney',
 	cb: config
 });
