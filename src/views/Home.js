@@ -157,7 +157,7 @@ class Home extends View {
 
 		element.setAttribute('data-tile-content-id', contentId);
 
-		const imageWrapper = this.createElement('div', 'tile-img-wrapper overflow-hidden rounded-md mr-8 w-64 md:w-80');
+		const imageWrapper = this.createElement('div', 'tile-img-wrapper overflow-hidden rounded-md mr-8 w-64 md:w-80 lg:w-96');
 		
 		const tileImage = this.createElement('img');
 		if (imageUrl) {
