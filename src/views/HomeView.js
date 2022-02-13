@@ -145,12 +145,13 @@ class Home extends View {
 		const imageWrapper = this.createElement(
 			'div',
 			`
-			 relative tile-img-wrapper  min-h-full rounded-md 
-			 w-64 md:w-80 lg:w-96 bg-gradient-to-r from-zinc-600 to-zinc-700
+			 relative tile-img-wrapper  min-h-full rounded-md
+			 bg-gradient-to-r from-zinc-600 to-zinc-700 
+			 w-[50vw] md:w-[25vw] lg:w-[20vw]
 			`
 		);
 
-		const hiddenImage = this.createElement('img', 'invisible');
+		const hiddenImage = this.createElement('img', 'invisible h-full w-full cover');
 		imageWrapper.appendChild(hiddenImage)
 
 		
@@ -166,7 +167,7 @@ class Home extends View {
 			 after:inset-0
 			`
 		);
-		const tileImage = this.createElement('img', 'rounded-md');
+		const tileImage = this.createElement('img', 'rounded-md h-full w-full cover');
 		
 		if (imageUrl) {
 			tileImage.src = imageUrl;
