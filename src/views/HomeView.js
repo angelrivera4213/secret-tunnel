@@ -206,7 +206,6 @@ class Home extends View {
 	}
 
 	_focusTile (elem) {
-		elem?.scrollIntoView({behavior: 'smooth', inline: 'start'});
 		elem?.focus();
 		this._focusedTile = elem;
 	}
