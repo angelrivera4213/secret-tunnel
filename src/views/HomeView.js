@@ -102,7 +102,9 @@ class Home extends View {
 		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x overflow-auto pl-12');
 
 		itemsContainer.onkeydown = (e) => {
-		    e.view.event.preventDefault();
+			if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
+				e.view.event.preventDefault();
+			}
 	    };
 
 		if (items?.length > 0) {
@@ -125,7 +127,6 @@ class Home extends View {
 
 	_createTileNode (video) {
 		const element = this.createElement('button', 'tile group snap-center p-[1.25vw] md:p-[1vw] lg:p-[0.75vw] focus:outline-none');
-
 		const contentId = getContentId(video) || getCollectionId(video);
 
 		const image = getImageByKeyVersion(
@@ -179,7 +180,6 @@ class Home extends View {
 
 		tileImageContainer.appendChild(tileImage);
 
-
 		imageWrapper.appendChild(tileImageContainer);
 
 		element.appendChild(imageWrapper);
@@ -204,18 +204,6 @@ class Home extends View {
 		}
 
 		return imageNode;
-	}
-
-	bindButtonPush (handler) {
-		this.buttonPush.addEventListener('click', e => {
-			handler && handler();
-		});
-	}
-
-	bindButtonPop (handler) {
-		this.buttonPop.addEventListener('click', e => {
-			handler && handler();
-		});
 	}
 
 	bindScrollBottom (handler) {
@@ -258,6 +246,7 @@ class Home extends View {
 	_onArrowDown () {
 		let set;
 		let tile;
+
 		if (!this._focusedTile) {
 			// No Focused Elem exist so set the first one
 			const firstSet = this.root.querySelector('.collection .set');
