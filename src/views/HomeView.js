@@ -124,7 +124,7 @@ class Home extends View {
 	}
 
 	_createTileNode (video) {
-		const element = this.createElement('button', 'tile group snap-center p-3 focus:outline-none');
+		const element = this.createElement('button', 'tile group snap-center p-[1.25vw] md:p-[1vw] lg:p-[0.75vw] focus:outline-none');
 
 		const contentId = getContentId(video) || getCollectionId(video);
 
@@ -151,7 +151,11 @@ class Home extends View {
 			`
 		);
 
-		const hiddenImage = this.createElement('img', 'invisible h-full w-full cover');
+		const hiddenImage = this._createImageNode({
+			className: 'invisible rounded-md h-full w-full cover',
+			src: imageUrl,
+			alt: titleContent
+		});
 		imageWrapper.appendChild(hiddenImage)
 
 		
@@ -167,13 +171,11 @@ class Home extends View {
 			 after:inset-0
 			`
 		);
-		const tileImage = this.createElement('img', 'rounded-md h-full w-full cover');
-		
-		if (imageUrl) {
-			tileImage.src = imageUrl;
-			hiddenImage.src = imageUrl;
-		}
-		tileImage.alt = titleContent;
+		const tileImage = this._createImageNode({
+			className: 'rounded-md h-full w-full cover',
+			src: imageUrl,
+			alt: titleContent
+		});
 
 		tileImageContainer.appendChild(tileImage);
 
@@ -183,6 +185,25 @@ class Home extends View {
 		element.appendChild(imageWrapper);
 
 		return element;
+	}
+
+	_createImageNode ({
+		className = '',
+		alt,
+		src
+	}) {
+		const imageNode = this.createElement('img', className);
+		imageNode.src = src;
+
+		if (alt) {
+			tileImage.alt = alt;
+		}
+
+		imageNode.onerror = () => {
+			imageNode?.parentNode?.removeChild?.(imageNode);
+		}
+
+		return imageNode;
 	}
 
 	bindButtonPush (handler) {
