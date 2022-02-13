@@ -8,7 +8,6 @@ export default function throttle (func, wait = 0, options = {}) {
     }
 
     return (...args) => { // spread allows multiple values in an array
-        console.log('sup', args);
         if (trailing) {
             shouldWait = true;
 

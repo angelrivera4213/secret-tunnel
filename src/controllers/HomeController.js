@@ -45,7 +45,6 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 	}
 
 	_onKeyDown = (...args) => {
-		console.log('here', args);
 		this._view.onArrowClick?.(...args)
 	}
 }
