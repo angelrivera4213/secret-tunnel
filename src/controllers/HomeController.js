@@ -21,10 +21,10 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 
 		this.mountKeyboardListener({
 			keyHandlers: {
-				'ArrowUp': this._onArrowUp,
-				'ArrowDown': this._onArrowDown,
-				'ArrowRight': this._onArrowRight,
-				'ArrowLeft': this._onArrowLeft
+				'ArrowUp': this._onKeyDown,
+				'ArrowDown': this._onKeyDown,
+				'ArrowRight': this._onKeyDown,
+				'ArrowLeft': this._onKeyDown
 			}
 		});
 	}
@@ -44,24 +44,9 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 		this._context.executeAction(loadSetRefs, {});
 	}
 
-	_onArrowUp = () => {
-		console.log('_onArrowUp');
-		this._view.onArrowUp?.();
-	}
-
-	_onArrowDown = () => {
-		console.log('_onArrowDown');
-		this._view.onArrowDown?.();
-	}
-
-	_onArrowRight = () => {
-		console.log('_onArrowRight');
-		this._view.onArrowRight?.();
-	}
-
-	_onArrowLeft = () => {
-		console.log('_onArrowLeft');
-		this._view.onArrowLeft?.();
+	_onKeyDown = (...args) => {
+		console.log('here', args);
+		this._view.onArrowClick?.(...args)
 	}
 }
 

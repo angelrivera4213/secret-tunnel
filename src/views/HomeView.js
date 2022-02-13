@@ -1,41 +1,16 @@
 import View from './lib/View';
 
-import {
-	getContainers,
-	getCollectionId,
-	getCollection
-} from '../selectors/collection';
-import {
-	getSet,
-	getType,
-	TYPE_SHELF_CONTAINER
-} from '../selectors/container';
-import {
-	getText,
-	getItems,
-	getSetId
-} from '../selectors/set';
-import {
-	getTextContent,
-	getTextByKey
-} from '../selectors/text';
-import {
-	getContentId,
-	getImage,
-	getVideoText,
-	imageKeyByType
-} from '../selectors/video';
-import {
-	getImageByKeyVersion,
-	getUrl
-} from '../selectors/image';
-import {
-	STANDARD_COLLECTION_TYPE
-} from '../selectors/types';
+// Selectors
+import { getContainers, getCollectionId, getCollection } from '../selectors/collection';
+import { getSet, getType, TYPE_SHELF_CONTAINER } from '../selectors/container';
+import { getText, getItems, getSetId } from '../selectors/set';
+import { getTextContent, getTextByKey } from '../selectors/text';
+import { getContentId, getImage, getVideoText, imageKeyByType } from '../selectors/video';
+import { getImageByKeyVersion, getUrl } from '../selectors/image';
+import { STANDARD_COLLECTION_TYPE } from '../selectors/types';
 
-import {
-	getElemWidthRem
-} from '../lib/utils';
+// Utils
+import throttle from '../lib/throttle';
 
 class Home extends View {
 	mount (props = {}, context) {
@@ -44,6 +19,7 @@ class Home extends View {
 			className = '',
 			text
 		} = props;
+		this.onArrowClick = throttle(this._onArrowClick, 200);
 		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll`);
 		this._focusedElem = null;
 	}
@@ -124,6 +100,10 @@ class Home extends View {
 		element.appendChild(titleWrapper);
 		
 		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x overflow-auto pl-12');
+
+		itemsContainer.onkeydown = (e) => {
+		    e.view.event.preventDefault();
+	    };
 
 		if (items?.length > 0) {
 			// create item nodes
@@ -235,7 +215,27 @@ class Home extends View {
 		this._focusedSet = elem;
 	}
 
-	onArrowDown () {
+	_onArrowClick = (key) => {
+		console.log('key', key);
+		switch (key) {
+			case 'ArrowUp': 
+				this._onArrowUp();
+				break;
+			case 'ArrowDown': 
+				this._onArrowDown();
+				break;
+			case 'ArrowRight':
+				this._onArrowRight();
+				break;
+			case 'ArrowLeft':
+				this._onArrowLeft();
+				break;
+			default:
+				break;
+		}
+	}
+
+	_onArrowDown () {
 		let set;
 		let tile;
 		if (!this._focusedTile) {
@@ -259,7 +259,7 @@ class Home extends View {
 		}
 	}
 
-	onArrowUp () {
+	_onArrowUp () {
 		if (this._focusedTile) {
 			const previousSet = this._focusedSet.previousElementSibling;
 			const firstTile = previousSet?.querySelector('.tile');
@@ -271,7 +271,7 @@ class Home extends View {
 		}
 	}
 
-	onArrowRight () {
+	_onArrowRight () {
 		if (this._focusedTile) {
 			const nextTile = this._focusedTile.nextElementSibling;
 
@@ -281,7 +281,7 @@ class Home extends View {
 		}
 	}
 
-	onArrowLeft () {
+	_onArrowLeft () {
 		if (this._focusedTile) {
 			const prevTile = this._focusedTile.previousElementSibling;
 

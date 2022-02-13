@@ -6,7 +6,7 @@ const KeyboardListenerMixin = (superclass) => class extends superclass {
                 keyListener: (e) => {
                     const key = e?.key;
                     const handler = this._keyBoard.handlers?.[key];
-                    handler?.();
+                    handler?.(key);
                 }
             };
 
