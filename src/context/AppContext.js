@@ -2,7 +2,10 @@ import createAppContext from './lib/createAppContext';
 
 const appContext = createAppContext({
 	componentActionErrorHandler: function componentActionErrorHandler (context, payload, done) {
-		console.log('Component Action Error', payload);
+		if (payload.err) {
+			// Handle err codes here from service requests
+			console.log('Component Error Handler', payload);
+		}
 	}
 });
 

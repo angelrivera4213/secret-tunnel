@@ -3,11 +3,11 @@ import View from './lib/View';
 // Selectors
 import { getContainers, getCollectionId, getCollection } from '../selectors/collection';
 import { getSet, getType, TYPE_SHELF_CONTAINER } from '../selectors/container';
-import { getText, getItems, getSetId } from '../selectors/set';
+import { getText, getItems, getSetId, getRefId } from '../selectors/set';
 import { getTextContent, getTextByKey } from '../selectors/text';
 import { getContentId, getImage, getVideoText, imageKeyByType } from '../selectors/video';
 import { getImageByKeyVersion, getUrl } from '../selectors/image';
-import { STANDARD_COLLECTION_TYPE } from '../selectors/types';
+import { STANDARD_COLLECTION_TYPE, SET_REF_TYPE, CURATED_SET_TYPE} from '../selectors/types';
 
 // Utils
 import throttle from '../lib/throttle';
@@ -80,24 +80,21 @@ class Home extends View {
 	}
 
 	_createSetNode = (set) => {
-		// Create Element 
-		const element = this.createElement('div', 'set py-6');
-
 		// Get Data
-		const setId = getSetId(set);
-		const items = getItems(set) || [];
+		const type = getType(set);
 		const text = getText(set);
 		const title = getTextByKey(text, 'title');
 		const titleContent = getTextContent(title) || '';
 
-		// Adjust Set
-		element.setAttribute('data-set-id', setId);
+		const setNode = this.createElement('div', 'set py-6');
+		const setId = getSetId(set);
+		const items = getItems(set) || [];
 
 		const titleWrapper = this.createElement('div', 'pb-3 pl-12');
 		const titleElem = this.createElement('span', 'pl-3 text-slate-50');
 		titleWrapper.appendChild(titleElem);
 		titleElem.innerText = titleContent;
-		element.appendChild(titleWrapper);
+		setNode.appendChild(titleWrapper);
 		
 		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x overflow-auto pl-12');
 
@@ -107,22 +104,30 @@ class Home extends View {
 			}
 	    };
 
-		if (items?.length > 0) {
-			// create item nodes
-			for (const item of items) {
-				const itemNode = this._createTileNode(item);
-				itemsContainer.appendChild(itemNode);
-			}
-
-			element.appendChild(itemsContainer);
-
-			return element;
+		// create item nodes
+		for (const item of items) {
+			const itemNode = this._createTileNode(item);
+			itemsContainer.appendChild(itemNode);
 		}
 
-		const emptyRefSetElem = this.createElement('div', 'empty-ref-set');
-		emptyRefSetElem.setAttribute('data-set-id', setId);
+		setNode.appendChild(itemsContainer);
 
-		return emptyRefSetElem;
+
+		if (type === CURATED_SET_TYPE) {
+			setNode.setAttribute('data-set-type', type);
+			setNode.setAttribute('data-set-id', setId);
+		}
+
+		if (type === SET_REF_TYPE) {
+			const refId = getRefId(set);
+
+			setNode.classList.add('hidden')
+			setNode.setAttribute('data-set-type', type);
+			setNode.setAttribute('data-ref-id', refId);
+			setNode.setAttribute('data-ref-state', 'initial');
+		}
+
+		return setNode
 	}
 
 	_createTileNode (video) {
@@ -149,11 +154,12 @@ class Home extends View {
 			 relative tile-img-wrapper  min-h-full rounded-md
 			 bg-gradient-to-r from-zinc-600 to-zinc-700 
 			 w-[50vw] md:w-[25vw] lg:w-[20vw]
+			 h-[30vw] md:h-[15vw] lg:h-[12vw]
 			`
 		);
 
 		const hiddenImage = this._createImageNode({
-			className: 'invisible rounded-md h-full w-full cover',
+			className: 'invisible rounded-md h-full w-full fill',
 			src: imageUrl,
 			alt: titleContent
 		});
@@ -173,7 +179,7 @@ class Home extends View {
 			`
 		);
 		const tileImage = this._createImageNode({
-			className: 'rounded-md h-full w-full cover',
+			className: 'rounded-md h-full w-full fill',
 			src: imageUrl,
 			alt: titleContent
 		});
@@ -213,6 +219,54 @@ class Home extends View {
 				handler && handler();
 			}
 		});
+	}
+
+	setupRefPlaceholders () {
+		// calculate the number of sets to fill viewport
+		const viewportHeight = window.innerHeight;
+		const set = this.root.querySelector(`div[data-set-type='${CURATED_SET_TYPE}']`);
+		const setOffsetHeight = set.offsetHeight; // we want border and padding in calculation
+
+		const setAmount = Math.ceil(viewportHeight / setOffsetHeight);
+
+		// calculate number of placeholder tiles
+		const tiles = set.querySelectorAll('.tiles-container > .tile');
+		const numTiles = tiles?.length;
+
+		// create placeholder sets
+		const refSets = this.root.querySelectorAll(`div[data-set-type='${SET_REF_TYPE}'][data-ref-state=initial]`);
+		const refSetsToLoad = [...refSets].slice(0, setAmount);
+
+		for (const refSet of refSetsToLoad) {
+			this._createPlacholderSet(refSet, {
+				tiles: {
+					num: numTiles
+				}
+			});
+		}
+
+
+		// call handler to make call for ref sets 
+
+	} 
+
+	_createPlacholderSet (refSet, options) {
+		if (!refSet) {
+			return;
+		}
+
+		const numTiles = options?.tiles?.num || 0;
+		const itemsContainer =refSet.querySelector('div.tiles-container');
+
+		// create item nodes
+		for (let i = 0; i < numTiles; i++) {
+			const itemNode = this._createTileNode();
+			itemsContainer.appendChild(itemNode);
+		}
+
+		itemsContainer.classList.add('animate-pulse');
+		refSet.setAttribute('data-ref-state', 'pending');
+		refSet.classList.remove('hidden');
 	}
 
 	_focusTile (elem) {
@@ -262,7 +316,12 @@ class Home extends View {
 			tile = firstTile;
 		}
 
-		if (set && tile) {
+		const isRefSet = set?.dataset?.setType === SET_REF_TYPE;
+		const refState = set?.dataset?.refState;
+		console.log('set?.dataset?', set?.dataset);
+		const isReady = refState !== 'initial' && refState !== 'pending';
+
+		if (isReady && set && tile) {
 			this._focusTile(tile);
 			this._focusSet(set);
 		}

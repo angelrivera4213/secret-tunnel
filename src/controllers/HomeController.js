@@ -1,5 +1,8 @@
 import Controller from './lib/Controller';
 
+// Utils
+import throttle from '../lib/throttle';
+
 // stores
 import HomeStore from '../stores/HomeStore';
 
@@ -17,7 +20,7 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 
 		this._context.executeAction(loadHome, {});
 
-		this._view.bindScrollBottom(this._onBottomScrollListener);
+		this._view.bindScrollBottom(throttle(this._onBottomScrollLoad, 200));
 
 		this.mountKeyboardListener({
 			keyHandlers: {
@@ -40,8 +43,8 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 		this._view.loadHome(homeStore.getState()?.data);
 	}
 
-	_onBottomScrollListener = () => {
-		this._context.executeAction(loadSetRefs, {});
+	_onBottomScrollLoad = () => {
+		this._view.setupRefPlaceholders();
 	}
 
 	_onKeyDown = (...args) => {
