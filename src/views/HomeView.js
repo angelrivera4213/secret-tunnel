@@ -124,7 +124,7 @@ class Home extends View {
 	}
 
 	_createTileNode (video) {
-		const element = this.createElement('button', 'tile group snap-center p-3 outline-0');
+		const element = this.createElement('button', 'tile group snap-center p-3 focus:outline-none');
 
 		const contentId = getContentId(video) || getCollectionId(video);
 
@@ -215,7 +215,6 @@ class Home extends View {
 	}
 
 	_onArrowClick = (key) => {
-		console.log('key', key);
 		switch (key) {
 			case 'ArrowUp': 
 				this._onArrowUp();
