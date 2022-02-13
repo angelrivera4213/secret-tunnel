@@ -17,8 +17,6 @@ class View {
         // and is no longer the current view
         
         // might remove listeners temporarily here
-        
-        throw Error('Should be implemented by View Sub Class');
     }
 
     rehydrate (context) {
@@ -26,7 +24,6 @@ class View {
         // and making this the current view
         
         // handle adding listeners 
-        throw Error('Should be implemented by View Sub Class');
     }
 
     unmount (context) {
@@ -38,7 +35,11 @@ class View {
     createElement(tag, className) {
         const element = document.createElement(tag);
 
-        if (className) element.classList.add(...className.split(' '));
+
+        if (className) {
+            const classes = className.split(' ').map(c => c.trim()).filter(c => !!c);
+            element.classList.add(...classes);
+        }
 
         return element;
     }

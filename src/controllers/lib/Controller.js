@@ -16,17 +16,15 @@ export class Controller {
 
 	mount = (...args) => {
 		this._view.mount(...args);
-		this.viewMounted?.();
 	}
 
 	unmount = (...args) => {
-		this.viewWillUnmount?.();
 		this._view.unmount(...args);
 	}
 
-	rehydrate = (...args) => this._view.rehydrate(...args);
+	rehydrate = (...args) => this._view.rehydrate?.(...args);
 
-	dehydrate = (...args) => this._view.rehydrate(...args);
+	dehydrate = (...args) => this._view.dehydrate?.(...args);
 
 } 
 

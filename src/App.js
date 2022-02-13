@@ -47,11 +47,13 @@ class App {
 		
 		if (currentController) {
 			const currCntlRoot = currentController.getRoot();
+			currCntlRoot.viewWillUnmount?.();
 			this._root.removeChild(currCntlRoot);
 			currentController.dehydrate(this._getAppContext());
 		}
 
 		this._root.appendChild(controller.getRoot());
+		controller.viewMounted?.();
 		this._controllerStack.push(controller);
 	}
 
@@ -59,11 +61,13 @@ class App {
 		if (this._controllerStack.length > 1) {
 			const currentController = this._controllerStack.pop();
 			this._root.removeChild(currentController.getRoot());
+			currentController.viewWillUnmount?.();
 			currentController.unmount(this._getAppContext());
 
 			const newController = this.getCurrentController();
 			newController.rehydrate(this._getAppContext());
 			this._root.appendChild(newController.getRoot());
+			controller.viewMounted?.();
 		}
 	}
 }

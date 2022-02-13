@@ -6,6 +6,10 @@ export function loadHome (context, payload, done) {
 		context.dispatch('LOAD_HOME', result);
 		done?.(null, result)
 	}).catch(err => {
-		done?.(err, )
+		done?.(err)
 	});
+}
+
+export function loadSetRefs (context, payload, done) {
+	
 }

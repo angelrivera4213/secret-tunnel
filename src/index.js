@@ -3,8 +3,8 @@ import './styles/global.css';
 import App from './App';
 import AppContext from './context/AppContext';
 
-// Initial controller 
-import createHomeController from './controllers/createHomeController';
+// Initial controller view
+import Home from './controllerViews/Home';
 
 // Stores
 import HomeStore from './stores/HomeStore';
@@ -18,4 +18,4 @@ const app = new App({
 	context: componentContext
 });
 
-app.pushController(createHomeController());
+app.pushController(Home());

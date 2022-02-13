@@ -33,6 +33,10 @@ import {
 	STANDARD_COLLECTION_TYPE
 } from '../selectors/types';
 
+import {
+	getElemWidthRem
+} from '../lib/utils';
+
 class Home extends View {
 	mount (props = {}, context) {
 		const {
@@ -40,7 +44,8 @@ class Home extends View {
 			className = '',
 			text
 		} = props;
-		this.root = this.createElement('div', `min-h-screen bg-neutral-900 text-xl`);
+		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll`);
+		this._focusedElem = null;
 	}
 
 	_createButton ({
@@ -78,6 +83,7 @@ class Home extends View {
 		this.root.appendChild(this._collection);
 	}
 
+
 	_createCollectionNode (collection) {
 		// Create element 
 		const element = this.createElement('div', 'collection');
@@ -111,15 +117,13 @@ class Home extends View {
 		// Adjust Set
 		element.setAttribute('data-set-id', setId);
 
-		const titleWrapper = this.createElement('div', 'pb-6 pl-12');
-		const titleElem = this.createElement('span', 'text-slate-50');
+		const titleWrapper = this.createElement('div', 'pb-3 pl-12');
+		const titleElem = this.createElement('span', 'pl-3 text-slate-50');
 		titleWrapper.appendChild(titleElem);
 		titleElem.innerText = titleContent;
 		element.appendChild(titleWrapper);
 		
-		const itemsContainer = this.createElement('div', 'item-container flex overflow-auto pl-12');
-
-		console.log('this.root.clientWidth', this.root.clientWidth);
+		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x overflow-auto pl-12');
 
 		if (items?.length > 0) {
 			// create item nodes
@@ -133,12 +137,14 @@ class Home extends View {
 			return element;
 		}
 
-		return this.createElement('div', 'empty-ref-set')
+		const emptyRefSetElem = this.createElement('div', 'empty-ref-set');
+		emptyRefSetElem.setAttribute('data-set-id', setId);
+
+		return emptyRefSetElem;
 	}
 
 	_createTileNode (video) {
-		console.log('video', video);
-		const element = this.createElement('div', 'tile');
+		const element = this.createElement('button', 'tile group snap-center p-3 outline-0');
 
 		const contentId = getContentId(video) || getCollectionId(video);
 
@@ -149,7 +155,6 @@ class Home extends View {
 			'1.78'
 		);
 
-		console.log('image', image);
 		const imageUrl = getUrl(image);
 		const text = getVideoText(video);
 		const title = getTextByKey(text, 'title');
@@ -157,18 +162,42 @@ class Home extends View {
 
 		element.setAttribute('data-tile-content-id', contentId);
 
-		const imageWrapper = this.createElement('div', 'tile-img-wrapper overflow-hidden rounded-md mr-8 w-64 md:w-80 lg:w-96');
+		const imageWrapper = this.createElement(
+			'div',
+			`
+			 relative tile-img-wrapper  min-h-full rounded-md 
+			 w-64 md:w-80 lg:w-96 bg-gradient-to-r from-zinc-600 to-zinc-700
+			`
+		);
+
+		const hiddenImage = this.createElement('img', 'invisible');
+		imageWrapper.appendChild(hiddenImage)
+
 		
-		const tileImage = this.createElement('img');
+		const tileImageContainer = this.createElement(
+			'div',
+			`absolute inset-0 rounded-md h-full w-full group-focus:scale-105 group-hover:scale-105
+			 transition-[transform] duration-700 bg-gradient-to-r from-zinc-600 to-zinc-700
+			 after:content-[''] after:absolute after:z-10 after:bg-transparent after:border-0 after:border-slate-50 after:opacity-0
+			 after:transition-opacity after:duration-700
+			 after:box-border after:rounded-md after:w-full after:h-full
+			 after:group-focus:border-4 after:group-hover:border-4
+			 after:group-focus:opacity-80 after:group-hover:opacity-80
+			 after:inset-0
+			`
+		);
+		const tileImage = this.createElement('img', 'rounded-md');
+		
 		if (imageUrl) {
 			tileImage.src = imageUrl;
+			hiddenImage.src = imageUrl;
 		}
 		tileImage.alt = titleContent;
 
-		console.log('tileImage', tileImage);
-		console.log('imageUrl', imageUrl);
+		tileImageContainer.appendChild(tileImage);
 
-		imageWrapper.appendChild(tileImage);
+
+		imageWrapper.appendChild(tileImageContainer);
 
 		element.appendChild(imageWrapper);
 
@@ -185,6 +214,81 @@ class Home extends View {
 		this.buttonPop.addEventListener('click', e => {
 			handler && handler();
 		});
+	}
+
+	bindScrollBottom (handler) {
+		this.root.addEventListener('scroll', e => {
+			const target = e.target;
+			if(target.scrollHeight - target.scrollTop - target.clientHeight < 1) {
+				handler && handler();
+			}
+		});
+	}
+
+	_focusTile (elem) {
+		elem?.scrollIntoView({behavior: 'smooth', inline: 'start'});
+		elem?.focus();
+		this._focusedTile = elem;
+	}
+
+	_focusSet (elem) {
+		this._focusedSet = elem;
+	}
+
+	onArrowDown () {
+		let set;
+		let tile;
+		if (!this._focusedTile) {
+			// No Focused Elem exist so set the first one
+			const firstSet = this.root.querySelector('.collection .set');
+			const firstTile = firstSet?.querySelector('.tile');
+
+			set = firstSet;
+			tile = firstTile;
+		} else {
+			const nextSet = this._focusedSet.nextElementSibling;
+			const firstTile = nextSet?.querySelector('.tile');
+
+			set = nextSet;
+			tile = firstTile;
+		}
+
+		if (set && tile) {
+			this._focusTile(tile);
+			this._focusSet(set);
+		}
+	}
+
+	onArrowUp () {
+		if (this._focusedTile) {
+			const previousSet = this._focusedSet.previousElementSibling;
+			const firstTile = previousSet?.querySelector('.tile');
+
+			if (previousSet && firstTile) {
+				this._focusTile(firstTile);
+				this._focusSet(previousSet);
+			}
+		}
+	}
+
+	onArrowRight () {
+		if (this._focusedTile) {
+			const nextTile = this._focusedTile.nextElementSibling;
+
+			if (nextTile) {
+				this._focusTile(nextTile);
+			}
+		}
+	}
+
+	onArrowLeft () {
+		if (this._focusedTile) {
+			const prevTile = this._focusedTile.previousElementSibling;
+
+			if (prevTile) {
+				this._focusTile(prevTile);
+			}
+		}
 	}
 }
 
