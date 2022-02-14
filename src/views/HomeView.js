@@ -235,8 +235,6 @@ class Home extends View {
 	}
 
 	lastSetInViewPort () {
-		console.log('checking if last set in view port');
-		console.log('this.root', this.root);
 		if (this.root) {
 			const visibleSets = this.root.querySelectorAll(`div.set:not([data-ref-state=initial])`);
 			const lastVisibleSet = visibleSets.item(visibleSets.length - 1);
