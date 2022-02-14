@@ -22,7 +22,7 @@ class Home extends View {
 			text
 		} = props;
 		this.onArrowClick = throttle(this._onArrowClick, 200);
-		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll pb-6`);
+		this.root = this.createElement('div', `min-h-screen max-h-screen min-w-screen max-w-screen overflow-x-hidden bg-neutral-900 text-xl overflow-y-scroll pb-6 `);
 		this._focusedElem = null;
 		this._pendingRefs = new Map();
 	}
@@ -105,7 +105,6 @@ class Home extends View {
 
 
 		if (type === CURATED_SET_TYPE) {
-			tileList.classList.add('overflow-auto');
 			setNode.setAttribute('data-set-type', type);
 			setNode.setAttribute('data-set-id', setId);
 		}
@@ -114,7 +113,6 @@ class Home extends View {
 			const refId = getRefId(set);
 
 			setNode.classList.add('hidden');
-			tileList.classList.add('overflow-hidden');
 			setNode.setAttribute('data-set-type', type);
 			setNode.setAttribute('data-ref-id', refId);
 			setNode.setAttribute('data-ref-state', 'initial');
@@ -124,7 +122,7 @@ class Home extends View {
 	}
 
 	_createTileList (items = [], options) {
-		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x pl-12');
+		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x pl-12 overflow-auto');
 
 		itemsContainer.onkeydown = (e) => {
 			if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
