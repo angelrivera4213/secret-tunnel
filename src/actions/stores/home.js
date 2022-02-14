@@ -3,21 +3,12 @@ import DisneyService from '../../services/DisneyService';
 
 // libs
 import { runParallel } from '../lib/async';
+import loadAction from '../lib/loadAction';
 
 // Actions
 import { loadRef } from './refs';
 
-export function loadHome (context, payload, done) {
-	context.dispatch('LOAD_HOME_ATTEMPT');
-
-	DisneyService.read(context, 'disney.home', {}).then(result => {
-		context.dispatch('LOAD_HOME_SUCCESS', result);
-		done?.(null, result)
-	}).catch(err => {
-		context.dispatch('LOAD_HOME_FAILURE', err);
-		done?.(err)
-	});
-}
+export const loadHome = loadAction(DisneyService, 'disney.home', 'HOME');
 
 export function loadRefs (context, payload, done) {
 	const refIdList = payload?.refIdList;

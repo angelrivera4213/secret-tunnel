@@ -1,6 +1,14 @@
 // Services
 import DisneyService from '../../services/DisneyService';
 
+// libs
+import loadAction from '../lib/loadAction';
+
+
+export const getRef = loadAction(DisneyService, 'disney.ref', 'REF', {
+	returnOriginalParams: true
+});
+
 export function loadRef (context, payload, done) {
 	const refId = payload?.refId;
 
@@ -8,13 +16,5 @@ export function loadRef (context, payload, done) {
 		return done?.();
 	}
 
-	context.dispatch('LOAD_REF_ATTEMPT');
-	
-	DisneyService.read(context, 'disney.ref', { refId }).then(result => {
-		context.dispatch('LOAD_REF_SUCCESS', result);
-		done?.(null, result)
-	}).catch(err => {
-		context.dispatch('LOAD_REF_FAILURE', err);
-		done?.()
-	});
+	context.executeAction(getRef, { refId }, done);
 }

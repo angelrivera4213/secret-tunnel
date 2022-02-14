@@ -43,6 +43,13 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 	_homeStoreListener = () => {
 		const homeStore = this._context.getStore(HomeStore);
 		this._view.loadHome(homeStore.getState()?.data);
+
+		if (this._view.lastSetInViewPort()) {
+			// Load more refs if current 
+			// viewport already contains all available sets
+			console.log('load more refs');
+			this._view.setupRefPlaceholders();
+		}
 	}
 
 	_refStoreListener = () => {

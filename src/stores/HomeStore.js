@@ -4,7 +4,7 @@ export default createReducerStore({
 	storeName: 'HomeStore',
 	initialState: {},
 	reducers: {
-		'LOAD_HOME_SUCCESS': (state, payload) => {
+		'HOME_LOAD_SUCCESS': (state, payload) => {
 			const data = payload?.data;
 
 			if (data) {

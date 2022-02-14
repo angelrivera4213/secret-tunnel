@@ -22,7 +22,7 @@ class Home extends View {
 			text
 		} = props;
 		this.onArrowClick = throttle(this._onArrowClick, 200);
-		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll`);
+		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll pb-6`);
 		this._focusedElem = null;
 		this._pendingRefs = new Map();
 	}
@@ -228,18 +228,28 @@ class Home extends View {
 
 	bindScrollBottom (handler) {
 		this.root.addEventListener('scroll', debounce(e => {
-			const target = e.target;
+			const lastSetInViewPort = this.lastSetInViewPort();
 
+			if (lastSetInViewPort) {
+				handler && handler();
+			}
+		}, 200));
+	}
+
+	lastSetInViewPort () {
+		console.log('checking if last set in view port');
+		console.log('this.root', this.root);
+		if (this.root) {
 			const visibleSets = this.root.querySelectorAll(`div.set:not([data-ref-state=initial])`);
 			const lastVisibleSet = visibleSets.item(visibleSets.length - 1);
 
 			// if last visible set is in the view port then call handler
 			const lastInViewPort = isInViewport(lastVisibleSet);
 
-			if (lastInViewPort) {
-				handler && handler();
-			}
-		}, 200));
+			return lastInViewPort;
+		}
+
+		return false;
 	}
 
 	setRefLoadListener (handler) {
@@ -286,26 +296,30 @@ class Home extends View {
 
 	loadRefs (setsByRefId) {
 		const pendingRefs= [...this._pendingRefs.entries()];
-
-		console.log('setsByRefId', setsByRefId);
 		pendingRefs.forEach(([refId, refNode]) => {
 			const setData = setsByRefId[refId];
 
 			if (setData) {
+				const setId = getSetId(setData);
+				const type = getType(setData);
+				
 				this._pendingRefs.delete(refId);
+
+				refNode.setAttribute('data-set-id', setId);
+				refNode.setAttribute('data-set-type', type);
 				refNode.setAttribute('data-ref-state', 'complete');
+
 				this._setRefTiles(refNode, setData);
 			}
 		});
 	}
 
 	_setRefTiles (node, data) {
-		console.log(node, data);
 		const items = getItems(data);
 
 		const tileList = this._createTileList(items);
 
-		const origTileList = node.querySelector('.tiles-container ');
+		const origTileList = node.querySelector('.tiles-container');
 
 		node.replaceChild(tileList, origTileList);
 	}
