@@ -1,8 +1,9 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-module.exports = {
+const webpackConfig = {
     entry: {
         main: './src/index.js'
     },
@@ -37,6 +38,17 @@ module.exports = {
         filename: 'js/[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true
-    },
-    mode: 'development'
+    }
+}
+
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'production') {
+        webpackConfig.plugins.push(new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            openAnalyzer: false
+        }))
+    }
+
+    return webpackConfig;
 };
