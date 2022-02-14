@@ -31,7 +31,7 @@ $ npm i
 ### Run the Development Server
 
 ```
-$npm run dev
+$ npm run dev
 ```
 
 ### Visit Localhost from Browser
