@@ -41,4 +41,4 @@ On Mac
 open -a "Google Chrome" http://localhost:3000
 ```
 
-![secret-tunnel](https://user-images.githubusercontent.com/30299114/153274704-15d14b1a-a7f7-4af8-8c20-23ce8f13b9cb.gif)
+<img src="https://user-images.githubusercontent.com/30299114/153274704-15d14b1a-a7f7-4af8-8c20-23ce8f13b9cb.gif" alt="Secret Tunnel!" width="100%"/>
