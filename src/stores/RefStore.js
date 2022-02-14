@@ -1,16 +1,22 @@
 import createReducerStore from './lib/createReducerStore';
 
+import {
+	getSetId
+} from '../selectors/set';
+
 export default createReducerStore({
-	storeName: 'HomeStore',
+	storeName: 'RefStore',
 	initialState: {},
 	reducers: {
-		'LOAD_HOME_SUCCESS': (state, payload) => {
+		'LOAD_REF_SUCCESS': (state, payload) => {
 			const data = payload?.data;
 
 			if (data) {
+				const set = data[Object.keys(data)[0]];
+				const setId = getSetId(set);
 				return {
 					...state,
-					data: payload?.data || {}
+					[setId]: set
 				};
 			}
 

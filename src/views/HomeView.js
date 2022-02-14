@@ -11,6 +11,7 @@ import { STANDARD_COLLECTION_TYPE, SET_REF_TYPE, CURATED_SET_TYPE} from '../sele
 
 // Utils
 import throttle from '../lib/throttle';
+import { isInViewport } from './lib/utils';
 
 class Home extends View {
 	mount (props = {}, context) {
@@ -96,7 +97,7 @@ class Home extends View {
 		titleElem.innerText = titleContent;
 		setNode.appendChild(titleWrapper);
 		
-		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x overflow-auto pl-12');
+		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x pl-12');
 
 		itemsContainer.onkeydown = (e) => {
 			if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
@@ -114,6 +115,7 @@ class Home extends View {
 
 
 		if (type === CURATED_SET_TYPE) {
+			itemsContainer.classList.add('overflow-auto');
 			setNode.setAttribute('data-set-type', type);
 			setNode.setAttribute('data-set-id', setId);
 		}
@@ -121,7 +123,8 @@ class Home extends View {
 		if (type === SET_REF_TYPE) {
 			const refId = getRefId(set);
 
-			setNode.classList.add('hidden')
+			setNode.classList.add('hidden');
+			itemsContainer.classList.add('overflow-hidden');
 			setNode.setAttribute('data-set-type', type);
 			setNode.setAttribute('data-ref-id', refId);
 			setNode.setAttribute('data-ref-state', 'initial');
@@ -198,27 +201,41 @@ class Home extends View {
 		alt,
 		src
 	}) {
-		const imageNode = this.createElement('img', className);
-		imageNode.src = src;
+		const imageNode = this.createElement(src ? 'img' : 'div', className);
+		
+		if (src) {
+			imageNode.src = src;
+
+			imageNode.onerror = () => {
+				imageNode?.parentNode?.removeChild?.(imageNode);
+			}
+		}
 
 		if (alt) {
 			tileImage.alt = alt;
-		}
-
-		imageNode.onerror = () => {
-			imageNode?.parentNode?.removeChild?.(imageNode);
 		}
 
 		return imageNode;
 	}
 
 	bindScrollBottom (handler) {
-		this.root.addEventListener('scroll', e => {
+		this.root.addEventListener('scroll', throttle(e => {
 			const target = e.target;
-			if(target.scrollHeight - target.scrollTop - target.clientHeight < 1) {
+
+			const visibleSets = this.root.querySelectorAll(`div.set:not([data-ref-state=initial])`);
+			const lastVisibleSet = visibleSets.item(visibleSets.length - 1);
+
+			// if last visible set is in the view port then call handler
+			const lastInViewPort = isInViewport(lastVisibleSet);
+
+			if (lastInViewPort) {
 				handler && handler();
 			}
-		});
+		}, 200));
+	}
+
+	setRefLoadListener (handler) {
+		this._setRefLoadListener = handler;
 	}
 
 	setupRefPlaceholders () {
@@ -236,19 +253,25 @@ class Home extends View {
 		// create placeholder sets
 		const refSets = this.root.querySelectorAll(`div[data-set-type='${SET_REF_TYPE}'][data-ref-state=initial]`);
 		const refSetsToLoad = [...refSets].slice(0, setAmount);
-
+		const refIds = [];
 		for (const refSet of refSetsToLoad) {
 			this._createPlacholderSet(refSet, {
 				tiles: {
 					num: numTiles
 				}
 			});
+			refIds.push(refSet.dataset.refId);
 		}
 
 
-		// call handler to make call for ref sets 
 
+		// call handler to make call for ref sets 
+		this._setRefLoadListener?.({
+			refIdList: refIds
+		});
 	} 
+
+
 
 	_createPlacholderSet (refSet, options) {
 		if (!refSet) {
@@ -318,7 +341,6 @@ class Home extends View {
 
 		const isRefSet = set?.dataset?.setType === SET_REF_TYPE;
 		const refState = set?.dataset?.refState;
-		console.log('set?.dataset?', set?.dataset);
 		const isReady = refState !== 'initial' && refState !== 'pending';
 
 		if (isReady && set && tile) {

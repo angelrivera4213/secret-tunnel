@@ -11,7 +11,6 @@ const methodHostTypeOverride = {
 export class BaseService extends Service {
 	async crud (type, context, resource, params = {}, body) {
 		let configData = this.cb;
-		console.log('configData', configData);
 		let resourceData = configData?.resources?.[resource];
 
 		if (!resourceData) {

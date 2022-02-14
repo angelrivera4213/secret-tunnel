@@ -8,9 +8,11 @@ import Home from './controllerViews/Home';
 
 // Stores
 import HomeStore from './stores/HomeStore';
+import RefStore from './stores/RefStore';
 
 AppContext.registerStores([
-	HomeStore
+	HomeStore,
+	RefStore
 ]);
 const componentContext = AppContext.getComponentContext();
 

@@ -12,6 +12,11 @@ export default {
             "path": "/home.json",
             "params": {},
             "query": []
+        },
+        "disney.ref": {
+            "path": "/sets/{{refId}}.json",
+            "params": {},
+            "query": []
         }
     }
 }

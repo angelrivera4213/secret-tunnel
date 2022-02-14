@@ -1,26 +1,28 @@
 import Controller from './lib/Controller';
 
-// Utils
-import throttle from '../lib/throttle';
-
 // stores
 import HomeStore from '../stores/HomeStore';
+import RefStore from '../stores/RefStore';
 
 // Mixins
 import { mix } from '../mixins/lib/MixinBuilder';
 import KeyboardListenerMixin from '../mixins/KeyboardListenerMixin';
 
 // Actions
-import { loadHome, loadNextRefs } from '../actions/stores/home';
+import { loadHome, loadRefs } from '../actions/stores/home';
 
 export class HomeController extends mix(Controller).with(KeyboardListenerMixin) {
 	viewMounted () {
 		const homeStore = this._context.getStore(HomeStore);
 		homeStore.addListener(this._homeStoreListener);
 
+		const refStore = this._context.getStore(RefStore);
+		refStore.addListener(this._refStoreListener);
+
 		this._context.executeAction(loadHome, {});
 
-		this._view.bindScrollBottom(throttle(this._onBottomScrollLoad, 200));
+		this._view.bindScrollBottom(this._onBottomScrollLoad);
+		this._view.setRefLoadListener(this._loadRefs)
 
 		this.mountKeyboardListener({
 			keyHandlers: {
@@ -43,8 +45,20 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 		this._view.loadHome(homeStore.getState()?.data);
 	}
 
+	_refStoreListener = () => {
+		const refStore = this._context.getStore(RefStore);
+		console.log('refStore.getState', refStore.getState());
+		//this._view.loadHome(homeStore.getState()?.data);
+	}
+
 	_onBottomScrollLoad = () => {
 		this._view.setupRefPlaceholders();
+	}
+
+	_loadRefs = ({ refIdList = [] }) => {
+		this._context.executeAction(loadRefs, {
+			refIdList
+		});
 	}
 
 	_onKeyDown = (...args) => {
