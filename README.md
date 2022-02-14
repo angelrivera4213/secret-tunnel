@@ -49,5 +49,7 @@ $ open -a "Google Chrome" http://localhost:3000
 $ npm run build
 $ open -a "Google Chrome" $PWD/dist/report.html
 ```
+<img width="1379" alt="Screen Shot 2022-02-13 at 8 40 20 PM" src="https://user-images.githubusercontent.com/30299114/153801105-597250de-d1bd-4077-b7ae-9373c7becbc9.png">
+
 
 
