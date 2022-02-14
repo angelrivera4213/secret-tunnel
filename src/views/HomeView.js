@@ -11,6 +11,7 @@ import { STANDARD_COLLECTION_TYPE, SET_REF_TYPE, CURATED_SET_TYPE} from '../sele
 
 // Utils
 import throttle from '../lib/throttle';
+import debounce from '../lib/debounce';
 import { isInViewport } from './lib/utils';
 
 class Home extends View {
@@ -23,6 +24,7 @@ class Home extends View {
 		this.onArrowClick = throttle(this._onArrowClick, 200);
 		this.root = this.createElement('div', `min-h-screen max-h-screen bg-neutral-900 text-xl overflow-y-scroll`);
 		this._focusedElem = null;
+		this._pendingRefs = new Map();
 	}
 
 	_createButton ({
@@ -97,6 +99,31 @@ class Home extends View {
 		titleElem.innerText = titleContent;
 		setNode.appendChild(titleWrapper);
 		
+		const tileList = this._createTileList(items);
+
+		setNode.appendChild(tileList);
+
+
+		if (type === CURATED_SET_TYPE) {
+			tileList.classList.add('overflow-auto');
+			setNode.setAttribute('data-set-type', type);
+			setNode.setAttribute('data-set-id', setId);
+		}
+
+		if (type === SET_REF_TYPE) {
+			const refId = getRefId(set);
+
+			setNode.classList.add('hidden');
+			tileList.classList.add('overflow-hidden');
+			setNode.setAttribute('data-set-type', type);
+			setNode.setAttribute('data-ref-id', refId);
+			setNode.setAttribute('data-ref-state', 'initial');
+		}
+
+		return setNode
+	}
+
+	_createTileList (items = [], options) {
 		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x pl-12');
 
 		itemsContainer.onkeydown = (e) => {
@@ -111,26 +138,7 @@ class Home extends View {
 			itemsContainer.appendChild(itemNode);
 		}
 
-		setNode.appendChild(itemsContainer);
-
-
-		if (type === CURATED_SET_TYPE) {
-			itemsContainer.classList.add('overflow-auto');
-			setNode.setAttribute('data-set-type', type);
-			setNode.setAttribute('data-set-id', setId);
-		}
-
-		if (type === SET_REF_TYPE) {
-			const refId = getRefId(set);
-
-			setNode.classList.add('hidden');
-			itemsContainer.classList.add('overflow-hidden');
-			setNode.setAttribute('data-set-type', type);
-			setNode.setAttribute('data-ref-id', refId);
-			setNode.setAttribute('data-ref-state', 'initial');
-		}
-
-		return setNode
+		return itemsContainer;
 	}
 
 	_createTileNode (video) {
@@ -219,7 +227,7 @@ class Home extends View {
 	}
 
 	bindScrollBottom (handler) {
-		this.root.addEventListener('scroll', throttle(e => {
+		this.root.addEventListener('scroll', debounce(e => {
 			const target = e.target;
 
 			const visibleSets = this.root.querySelectorAll(`div.set:not([data-ref-state=initial])`);
@@ -254,13 +262,18 @@ class Home extends View {
 		const refSets = this.root.querySelectorAll(`div[data-set-type='${SET_REF_TYPE}'][data-ref-state=initial]`);
 		const refSetsToLoad = [...refSets].slice(0, setAmount);
 		const refIds = [];
+		
 		for (const refSet of refSetsToLoad) {
-			this._createPlacholderSet(refSet, {
+			const refId = refSet?.dataset?.refId;
+
+			const newRefSet = this._createPlacholderSet(refSet, {
 				tiles: {
 					num: numTiles
 				}
 			});
-			refIds.push(refSet.dataset.refId);
+
+			this._pendingRefs.set(refId, newRefSet);
+			refIds.push(refId);
 		}
 
 
@@ -271,6 +284,31 @@ class Home extends View {
 		});
 	} 
 
+	loadRefs (setsByRefId) {
+		const pendingRefs= [...this._pendingRefs.entries()];
+
+		console.log('setsByRefId', setsByRefId);
+		pendingRefs.forEach(([refId, refNode]) => {
+			const setData = setsByRefId[refId];
+
+			if (setData) {
+				this._pendingRefs.delete(refId);
+				refNode.setAttribute('data-ref-state', 'complete');
+				this._setRefTiles(refNode, setData);
+			}
+		});
+	}
+
+	_setRefTiles (node, data) {
+		console.log(node, data);
+		const items = getItems(data);
+
+		const tileList = this._createTileList(items);
+
+		const origTileList = node.querySelector('.tiles-container ');
+
+		node.replaceChild(tileList, origTileList);
+	}
 
 
 	_createPlacholderSet (refSet, options) {
@@ -290,6 +328,8 @@ class Home extends View {
 		itemsContainer.classList.add('animate-pulse');
 		refSet.setAttribute('data-ref-state', 'pending');
 		refSet.classList.remove('hidden');
+
+		return refSet
 	}
 
 	_focusTile (elem) {

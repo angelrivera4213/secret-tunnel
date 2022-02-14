@@ -47,8 +47,7 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 
 	_refStoreListener = () => {
 		const refStore = this._context.getStore(RefStore);
-		console.log('refStore.getState', refStore.getState());
-		//this._view.loadHome(homeStore.getState()?.data);
+		this._view.loadRefs(refStore.getState());
 	}
 
 	_onBottomScrollLoad = () => {
