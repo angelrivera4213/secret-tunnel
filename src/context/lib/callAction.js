@@ -5,8 +5,6 @@
 // This polyfill is recommended by MDN
 import 'setimmediate';
 
-import { isPromise } from '../../lib/utils';
-
 export default function (actionContext, action, payload, done) {
     const executeAction = new Promise(function (resolve, reject) {
         setImmediate(() => {

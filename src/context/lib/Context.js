@@ -10,7 +10,7 @@ export default class Context {
         this._componentActionErrorHandler = componentActionErrorHandler;
     }
 
-    registerStore (store) {
+    registerStore (...args) {
         this._registerStores.registerStore(...args);
     }
 

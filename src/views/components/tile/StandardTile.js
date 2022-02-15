@@ -1,6 +1,6 @@
 // Dependencies
 import cx from 'classnames';
-import { createElement, setAttributes } from '../../lib/utils';
+import { createElement } from '../../lib/utils';
 
 // Selectors
 import { getContentId, getImage, getText, imageKeyByType, getType } from '../../../selectors/content';
@@ -16,7 +16,6 @@ export default function Tile (content, {
     style
 } = {}) {
     const contentId = getContentId(content);
-    const type = getType(content);
     const text = getText(content);
     const title = getTextByKey(text, 'title');
     const titleContent = getTextContent(title) || '';

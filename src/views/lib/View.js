@@ -8,25 +8,25 @@ class View {
         throw Error('Should be implemented by View Sub Class');
     }
     
-    mount (props = {}, root, context) {
+    mount () {
         throw Error('Should be implemented by View Sub Class');
     }
 
-    dehydrate (context) {
+    dehydrate () {
         // will be called when we are moving class to the stack
         // and is no longer the current view
         
         // might remove listeners temporarily here
     }
 
-    rehydrate (context) {
+    rehydrate () {
         // will be called when are poppping off the stack
         // and making this the current view
         
         // handle adding listeners 
     }
 
-    unmount (context) {
+    unmount () {
         // will be called when are poppping off the stack
         // and need to kill all references
         throw Error('Should be implemented by View Sub Class');

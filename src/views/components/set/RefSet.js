@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { createElement } from '../../lib/utils';
 
 // Selectors
-import { getText, getRefId, getTextByKey, getRefIdType, getType, getContentClass } from '../../../selectors/set';
+import { getText, getRefId, getTextByKey, getRefIdType } from '../../../selectors/set';
 import { getTextContent } from '../../../selectors/text';
 
 // Components
@@ -14,9 +14,7 @@ export default function RefSet (set, {
     style
 } = {}) {
     // Get Data
-    const type = getType(set);
     const text = getText(set);
-    const contentClass = getContentClass(set);
     const title = getTextByKey(text, 'title', 'full');
     const titleContent = getTextContent(title) || '';
     const refId = getRefId(set);

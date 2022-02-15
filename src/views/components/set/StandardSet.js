@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { createElement } from '../../lib/utils';
 
 // Selectors
-import { getText, getItems, getSetId, getTextByKey, getType, getContentClass } from '../../../selectors/set';
+import { getText, getItems, getSetId, getTextByKey, getType } from '../../../selectors/set';
 import { getTextContent } from '../../../selectors/text';
 
 // Components
@@ -19,7 +19,6 @@ export default function StandardSet (set, {
     const text = getText(set);
     const setId = getSetId(set);
     const items = getItems(set) || [];
-    const contentClass = getContentClass(set);
     const title = getTextByKey(text, 'title', 'full');
     const titleContent = getTextContent(title) || '';
     attributes = {

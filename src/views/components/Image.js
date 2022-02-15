@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import { createElement } from '../lib/utils';
 
 export default function Image ({

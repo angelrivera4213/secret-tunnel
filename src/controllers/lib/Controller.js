@@ -8,8 +8,8 @@
  */
 export class Controller {
     constructor(view, context) {
-    	this._view = view;
-    	this._context = context;
+        this._view = view;
+        this._context = context;
     }
 
     getRoot = (...args) => this._view.getRoot(...args);

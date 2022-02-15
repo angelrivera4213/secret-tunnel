@@ -3,7 +3,7 @@ import { createElement } from '../../lib/utils';
 
 // Selectors
 import { getContainers, getCollectionId, getCollectionGroup } from '../../../selectors/collection';
-import { getCollectionGroupId, getContentClass } from '../../../selectors/collectionGroup';
+import { getCollectionGroupId } from '../../../selectors/collectionGroup';
 // Components
 import Container from '../container';
 
@@ -15,7 +15,6 @@ export default function HomeCollection (collection, {
     const collectionId = getCollectionId(collection);
     const collectionGroup = getCollectionGroup(collection);
     const containers = getContainers(collection) || [];
-    const contentClass = getContentClass(collectionGroup);
     const collectionGroupId = getCollectionGroupId(collectionGroup);
 	
     const element = createElement('div', {

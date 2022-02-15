@@ -9,8 +9,7 @@ import {
     TYPE_BECAUSE_YOU_SET,
     TYPE_PERSONALIZED_CURATED_SET,
     TYPE_TRENDING_SET,
-    getType,
-    getContentClass
+    getType
 } from '../../../selectors/set';
 
 const typeToComponent = {

@@ -50,7 +50,7 @@ export function setAttributes (node, attributes) {
     attributes = attributes || {};
 
     for (const key in attributes) {
-        if (attributes?.hasOwnProperty?.(key)) {
+        if (Object.prototype.hasOwnProperty.call(attributes, key)) {
             node?.setAttribute?.(key, attributes[key]);
         }
     }
@@ -60,7 +60,7 @@ export function setStyle (node, style) {
     style = style || {};
 
     for (const key in style) {
-        if (style?.hasOwnProperty?.(key) && node?.style) {
+        if (Object.prototype.hasOwnProperty.call(style, key)) {
             node.style[key] = style?.[key];
         }
     }

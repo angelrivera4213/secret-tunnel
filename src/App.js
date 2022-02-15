@@ -67,7 +67,7 @@ class App {
             const newController = this.getCurrentController();
             newController.rehydrate(this._getAppContext());
             this._root.appendChild(newController.getRoot());
-            controller.viewMounted?.();
+            newController.viewMounted?.();
         }
     }
 }

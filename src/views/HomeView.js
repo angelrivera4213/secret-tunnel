@@ -8,17 +8,17 @@ import SetComponent from './components/set';
 // Utils
 import throttle from '../lib/throttle';
 import debounce from '../lib/debounce';
-import { isInViewport, removeClassName, setAttributes } from './lib/utils';
+import { createElement, isInViewport, removeClassName, setAttributes } from './lib/utils';
 
 class Home extends View {
-    mount (props = {}, context) {
-        const {
-            backgroundColor = '000',
-            className = '',
-            text
-        } = props;
+    mount (/*props, context*/) {
         this.onArrowClick = throttle(this._onArrowClick, 200);
-        this.root = this.createElement('div', 'min-h-screen max-h-screen min-w-screen max-w-screen overflow-x-hidden bg-neutral-900 text-xl overflow-y-scroll pb-6 ');
+        this.root = createElement('div', {
+            className: `
+                min-h-screen max-h-screen min-w-screen max-w-screen 
+                overflow-x-hidden bg-neutral-900 text-xl overflow-y-scroll pb-6
+            `
+        });
         this._focusedElem = null;
         this._pendingRefs = new Map();
     }
@@ -27,16 +27,16 @@ class Home extends View {
         return this.root;
     }
 
-    unmount (props = {}, root, context) {
+    unmount (/*props = {}, root, context*/) {
         // any set timeouts or set intervals
 
     }
 
-    rehydrate (root, context) {
+    rehydrate (/*root , context*/) {
 
     }
 
-    dehydrate (root, context) {
+    dehydrate (/*root, context*/) {
 
     }
 
@@ -47,7 +47,7 @@ class Home extends View {
     }
 
     bindScrollBottom (handler) {
-        this.root.addEventListener('scroll', debounce(e => {
+        this.root.addEventListener('scroll', debounce(() => {
             const lastSetInViewPort = this.lastSetInViewPort();
 
             if (lastSetInViewPort) {
