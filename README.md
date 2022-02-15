@@ -19,12 +19,14 @@ If you are using ohmyzsh simply add nvm into your plugins list [example](https:/
 ### Clone the Repo
 ```
 $ git clone https://github.com/angelrivera4213/secret-tunnel.git
+
 $ cd secret-tunnel
 ```
 
 ### Install Node Modules
 ```
 $ nvm use 16
+
 $ npm i
 ```
 
@@ -36,9 +38,15 @@ $ npm run dev
 
 ### Visit Localhost from Browser
 
-On Mac
 ```
 $ open -a "Google Chrome" http://localhost:3000
+```
+
+### Set up custom host name for localhost
+```
+$ sudo /bin/sh -c 'echo "127.0.0.1   dev.secret-tunnel.com" >> /etc/hosts'
+
+$ open -a "Google Chrome" http://dev.secret-tunnel.com:3000
 ```
 
 <img src="https://user-images.githubusercontent.com/30299114/153274704-15d14b1a-a7f7-4af8-8c20-23ce8f13b9cb.gif" alt="Secret Tunnel!" width="100%"/>
