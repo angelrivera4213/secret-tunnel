@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { createElement } from '../lib/utils';
 
 // Components
-import Tile from './Tile';
+import Tile from './tile';
 
 export default function TileList ({
 	className,
@@ -24,9 +24,7 @@ export default function TileList ({
 
 	// create item nodes
 	tiles.forEach(tile => {
-		itemsContainer.appendChild(Tile({
-			tile
-		}));
+		itemsContainer.appendChild(Tile(tile));
 	});
 
 	return itemsContainer;
