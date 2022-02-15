@@ -1,12 +1,12 @@
 export const createControllerView = (Controller, View) => (props) => ({
-	context
+    context
 }) => {
-	const view = new View();
-	const controller = new Controller(view, context);
+    const view = new View();
+    const controller = new Controller(view, context);
 	
-	controller.mount(props, context);
+    controller.mount(props, context);
 
-	return controller;
+    return controller;
 };
 
 export default createControllerView;

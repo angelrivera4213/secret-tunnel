@@ -39,7 +39,7 @@ const webpackConfig = {
         path: path.resolve(__dirname, 'dist'),
         clean: true
     }
-}
+};
 
 
 module.exports = (env, argv) => {
@@ -47,7 +47,7 @@ module.exports = (env, argv) => {
         webpackConfig.plugins.push(new BundleAnalyzerPlugin({
             analyzerMode: 'static',
             openAnalyzer: false
-        }))
+        }));
     }
 
     return webpackConfig;

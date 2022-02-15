@@ -5,27 +5,27 @@ import { createElement } from '../lib/utils';
 import Tile from './tile';
 
 export default function TileList ({
-	className,
-	attributes,
-	style,
-	tiles = []
+    className,
+    attributes,
+    style,
+    tiles = []
 } = {}) {
-	const itemsContainer = createElement('div', {
-		attributes,
-		className: cx('tiles-container flex snap-x pl-12 overflow-auto', className),
-		style
-	});
+    const itemsContainer = createElement('div', {
+        attributes,
+        className: cx('tiles-container flex snap-x pl-12 overflow-auto', className),
+        style
+    });
 
-	itemsContainer.onkeydown = (e) => {
-		if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
-			e.view.event.preventDefault();
-		}
+    itemsContainer.onkeydown = (e) => {
+        if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
+            e.view.event.preventDefault();
+        }
     };
 
-	// create item nodes
-	tiles.forEach(tile => {
-		itemsContainer.appendChild(Tile(tile));
-	});
+    // create item nodes
+    tiles.forEach(tile => {
+        itemsContainer.appendChild(Tile(tile));
+    });
 
-	return itemsContainer;
+    return itemsContainer;
 }

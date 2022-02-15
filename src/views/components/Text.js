@@ -1,18 +1,18 @@
 import { createElement } from '../lib/utils';
 
 export default function Text ({
-	className,
-	attributes,
-	style,
-	text
+    className,
+    attributes,
+    style,
+    text
 } = {}) {
-	const element = createElement('span', {
-		className,
-		attributes,
-		style
-	});
+    const element = createElement('span', {
+        className,
+        attributes,
+        style
+    });
 
-	element.innerText = text;
+    element.innerText = text;
 
-	return element;
+    return element;
 }

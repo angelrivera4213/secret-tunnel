@@ -1,4 +1,4 @@
-import EventEmitter from '../../lib/EventEmitter'
+import EventEmitter from '../../lib/EventEmitter';
 
 class State extends EventEmitter {
     constructor (initialState) {

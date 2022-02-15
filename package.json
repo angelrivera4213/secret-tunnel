@@ -8,6 +8,8 @@
     "start": "node index.js",
     "build:dev": "webpack --mode development",
     "build": "webpack --mode production",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
     "dev": "NODE_ENV=development PORT=3000 nodemon --config nodemon.json"
   },
   "repository": {
@@ -28,6 +30,7 @@
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.6.0",
+    "eslint": "^8.9.0",
     "html-webpack-plugin": "^5.5.0",
     "jumpseat": "^2.2.0",
     "mini-css-extract-plugin": "^2.5.3",

@@ -5,36 +5,34 @@
 // This polyfill is recommended by MDN
 import 'setimmediate';
 
-import { isPromise } from '../../lib/utils';
-
 export default function (actionContext, action, payload, done) {
-	const executeAction = new Promise(function (resolve, reject) {
-		setImmediate(() => {
-			try {
-				action(
-					actionContext,
-					payload,
-					(err, result) => {
-						if (err) {
-							reject(err)
-						} else {
-							resolve(result);
-						}
-					}
-				);
-			} catch (e) {
-				reject(e)
-			}
-		});
-	}).then(result => {
-		setImmediate(() => {
-			done?.(null, result);
-		});
-	}).catch(e => {
-		setImmediate(() => {
-			done?.(e);
-		});
-	});
+    const executeAction = new Promise(function (resolve, reject) {
+        setImmediate(() => {
+            try {
+                action(
+                    actionContext,
+                    payload,
+                    (err, result) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(result);
+                        }
+                    }
+                );
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }).then(result => {
+        setImmediate(() => {
+            done?.(null, result);
+        });
+    }).catch(e => {
+        setImmediate(() => {
+            done?.(e);
+        });
+    });
 
-	return executeAction
+    return executeAction;
 }
