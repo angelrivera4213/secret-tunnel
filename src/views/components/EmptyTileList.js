@@ -2,7 +2,7 @@ import cx from 'classnames';
 import { createElement } from '../lib/utils';
 
 // Components
-import Tile from './Tile';
+import Tile from './tile';
 
 export default function EmptyTileList ({
 	className,
