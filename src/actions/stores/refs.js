@@ -6,15 +6,15 @@ import loadAction from '../lib/loadAction';
 
 
 export const getRef = loadAction(DisneyService, 'disney.ref', 'REF', {
-	returnOriginalParams: true
+    returnOriginalParams: true
 });
 
 export function loadRef (context, payload, done) {
-	const refId = payload?.refId;
+    const refId = payload?.refId;
 
-	if (!refId) {
-		return done?.();
-	}
+    if (!refId) {
+        return done?.();
+    }
 
-	context.executeAction(getRef, { refId }, done);
+    context.executeAction(getRef, { refId }, done);
 }

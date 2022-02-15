@@ -4,7 +4,7 @@ export default function throttle (func, wait = 0, options = {}) {
     let trailed = false;
 
     if (typeof func !== 'function') {
-        throw new Error('throttle.arguments[0] requires typeof function')
+        throw new Error('throttle.arguments[0] requires typeof function');
     }
 
     return (...args) => { // spread allows multiple values in an array
@@ -29,5 +29,5 @@ export default function throttle (func, wait = 0, options = {}) {
                 shouldWait = false;
             }, wait);
         }
-    }
+    };
 }

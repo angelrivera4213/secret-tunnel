@@ -7,24 +7,24 @@
  * @param view
  */
 export class Controller {
-	constructor(view, context) {
-    	this._view = view
+    constructor(view, context) {
+    	this._view = view;
     	this._context = context;
-	}
+    }
 
-	getRoot = (...args) => this._view.getRoot(...args);
+    getRoot = (...args) => this._view.getRoot(...args);
 
-	mount = (...args) => {
-		this._view.mount(...args);
-	}
+    mount = (...args) => {
+        this._view.mount(...args);
+    };
 
-	unmount = (...args) => {
-		this._view.unmount(...args);
-	}
+    unmount = (...args) => {
+        this._view.unmount(...args);
+    };
 
-	rehydrate = (...args) => this._view.rehydrate?.(...args);
+    rehydrate = (...args) => this._view.rehydrate?.(...args);
 
-	dehydrate = (...args) => this._view.dehydrate?.(...args);
+    dehydrate = (...args) => this._view.dehydrate?.(...args);
 
 } 
 

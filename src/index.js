@@ -11,13 +11,13 @@ import HomeStore from './stores/HomeStore';
 import RefStore from './stores/RefStore';
 
 AppContext.registerStores([
-	HomeStore,
-	RefStore
+    HomeStore,
+    RefStore
 ]);
 const componentContext = AppContext.getComponentContext();
 
 const app = new App({
-	context: componentContext
+    context: componentContext
 });
 
 app.pushController(Home());

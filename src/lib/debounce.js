@@ -1,10 +1,10 @@
 export default function debounce (func, wait = 0, options = {}) {
-    const { leading = false } = options
+    const { leading = false } = options;
     let timeoutId;
     let firstCall = false;
 
     if (typeof func !== 'function') {
-        throw new Error('throttle.arguments[0] requires typeof function')
+        throw new Error('throttle.arguments[0] requires typeof function');
     }
 
     return (...args) => { // spread allows multiple values in an array
@@ -14,12 +14,12 @@ export default function debounce (func, wait = 0, options = {}) {
 
         if (leading && !firstCall) {
             func(...args);
-            firstCall = true
+            firstCall = true;
         }
 
         timeoutId = setTimeout(() => {
             func(...args);
             firstCall = false;
         }, wait);
-    }
+    };
 }

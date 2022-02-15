@@ -11,23 +11,23 @@ import { loadRef } from './refs';
 export const loadHome = loadAction(DisneyService, 'disney.home', 'HOME');
 
 export function loadRefs (context, payload, done) {
-	const refIdList = payload?.refIdList;
+    const refIdList = payload?.refIdList;
 
-	if (refIdList?.length > 0) {
-		const actions = refIdList.reduce((acc, refId) => {
-			acc[refId] = {
-				action: loadRef,
-				payload: {
-					refId
-				}
-			};
+    if (refIdList?.length > 0) {
+        const actions = refIdList.reduce((acc, refId) => {
+            acc[refId] = {
+                action: loadRef,
+                payload: {
+                    refId
+                }
+            };
 
-			return acc;
-		}, {});
+            return acc;
+        }, {});
 
-		runParallel(context, actions, done)
-	}
+        runParallel(context, actions, done);
+    }
 
-	done?.();
+    done?.();
 }
 

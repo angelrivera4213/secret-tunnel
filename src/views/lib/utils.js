@@ -19,7 +19,7 @@ export function isInViewport (node) {
             (bottom >=0 && bottom <= winHeight) ||
             (top < 0 && bottom > winHeight)
         )
-    )
+    );
 }
 
 export function createElement (tag, props) {

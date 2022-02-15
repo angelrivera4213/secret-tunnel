@@ -8,7 +8,7 @@ export const getText = (content = {}) => content?.text;
 export const getType = (content = {}) => content?.type;
 
 export const imageKeyByType = {
-	[DMC_SERIES_TYPE]: 'series',
-	[DMC_VIDEO_TYPE]: 'program',
-	[STANDARD_COLLECTION_TYPE]: 'default'
-}
+    [DMC_SERIES_TYPE]: 'series',
+    [DMC_VIDEO_TYPE]: 'program',
+    [STANDARD_COLLECTION_TYPE]: 'default'
+};

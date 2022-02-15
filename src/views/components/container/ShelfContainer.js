@@ -8,25 +8,25 @@ import { getSet, getStyle, getType } from '../../../selectors/container';
 import Set from '../set';
 
 export default function ShelfContainer (container, {
-	className,
-	attributes,
-	style
+    className,
+    attributes,
+    style
 } = {}) {
-	const containerStyle = getStyle(container);
-	const containerType = getType(container);
-	const set = getSet(container);
+    const containerStyle = getStyle(container);
+    const containerType = getType(container);
+    const set = getSet(container);
 	
-	const element = createElement('div', {
-		className: cx(className),
-		attributes: {
-			...attributes,
-			'data-container-type': containerType
-		},
-		style
-	});
+    const element = createElement('div', {
+        className: cx(className),
+        attributes: {
+            ...attributes,
+            'data-container-type': containerType
+        },
+        style
+    });
 
-	const setNode = Set(set);
-	element.appendChild(setNode);
+    const setNode = Set(set);
+    element.appendChild(setNode);
 
-	return element;
+    return element;
 }
