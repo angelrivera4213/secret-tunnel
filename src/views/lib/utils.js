@@ -41,6 +41,11 @@ export function addClassName (node, className) {
     node?.classList?.add(...classes);
 }
 
+export function removeClassName (node, className) {
+    const classes = className?.replace(/\s+/g, ' ')?.split?.(' ').map(c => c.trim()).filter(c => !!c);
+    node?.classList?.remove(...classes);
+}
+
 export function setAttributes (node, attributes) {
     attributes = attributes || {};
 

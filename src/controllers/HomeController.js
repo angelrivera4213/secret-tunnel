@@ -16,8 +16,8 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 		const homeStore = this._context.getStore(HomeStore);
 		homeStore.addListener(this._homeStoreListener);
 
-		// const refStore = this._context.getStore(RefStore);
-		// refStore.addListener(this._refStoreListener);
+		const refStore = this._context.getStore(RefStore);
+		refStore.addListener(this._refStoreListener);
 
 		this._context.executeAction(loadHome, {});
 

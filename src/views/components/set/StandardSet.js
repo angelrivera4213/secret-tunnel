@@ -50,5 +50,5 @@ export default function StandardSet (set, {
 	element.appendChild(titleWrapper);
 	element.appendChild(tileList);
 
-	return element
+	return element;
 }

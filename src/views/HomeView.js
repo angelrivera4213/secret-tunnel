@@ -4,6 +4,8 @@ import View from './lib/View';
 import Tile from './components/Tile';
 import TileList from './components/TileList';
 import HomeCollection from './components/collection/HomeCollection';
+import EmptyTileList from './components/EmptyTileList';
+import SetComponent from './components/set';
 
 // Selectors
 import { getContainers, getCollectionId, getCollection } from '../selectors/collection';
@@ -17,7 +19,7 @@ import { STANDARD_COLLECTION_TYPE, SET_REF_TYPE, CURATED_SET_TYPE} from '../sele
 // Utils
 import throttle from '../lib/throttle';
 import debounce from '../lib/debounce';
-import { isInViewport } from './lib/utils';
+import { isInViewport, removeClassName, setAttributes } from './lib/utils';
 
 class Home extends View {
 	mount (props = {}, context) {
@@ -67,7 +69,7 @@ class Home extends View {
 
 	lastSetInViewPort () {
 		if (this.root) {
-			const visibleSets = this.root.querySelectorAll(`div.set:not([data-ref-state=initial])`);
+			const visibleSets = this.root.querySelectorAll('[data-set-id]');
 			const lastVisibleSet = visibleSets.item(visibleSets.length - 1);
 
 			// if last visible set is in the view port then call handler
@@ -86,34 +88,27 @@ class Home extends View {
 	setupRefPlaceholders () {
 		// calculate the number of sets to fill viewport
 		const viewportHeight = window.innerHeight;
-		const set = this.root.querySelector(`div[data-set-type='${CURATED_SET_TYPE}']`);
-		const setOffsetHeight = set.offsetHeight; // we want border and padding in calculation
-
+		const existingSet = this.root.querySelector(`[data-set-id]`);
+		const setOffsetHeight = existingSet.offsetHeight; // we want border and padding in calculation
 		const setAmount = Math.ceil(viewportHeight / setOffsetHeight);
 
-		// calculate number of placeholder tiles
-		const tiles = set.querySelectorAll('.tiles-container > .tile');
-		const numTiles = tiles?.length;
-
 		// create placeholder sets
-		const refSets = this.root.querySelectorAll(`div[data-set-type='${SET_REF_TYPE}'][data-ref-state=initial]`);
+		const refSets = this.root.querySelectorAll(`[data-ref-id-type="setId"]:not([data-ref-state="loading"])`);
 		const refSetsToLoad = [...refSets].slice(0, setAmount);
 		const refIds = [];
 		
 		for (const refSet of refSetsToLoad) {
 			const refId = refSet?.dataset?.refId;
 
-			const newRefSet = this._createPlacholderSet(refSet, {
-				tiles: {
-					num: numTiles
-				}
+			refSet?.appendChild?.(EmptyTileList());
+			removeClassName(refSet, 'hidden');
+			setAttributes(refSet, {
+				'data-ref-state': 'loading'
 			});
 
-			this._pendingRefs.set(refId, newRefSet);
+			this._pendingRefs.set(refId, refSet);
 			refIds.push(refId);
 		}
-
-
 
 		// call handler to make call for ref sets 
 		this._setRefLoadListener?.({
@@ -122,57 +117,16 @@ class Home extends View {
 	} 
 
 	loadRefs (setsByRefId) {
-		const pendingRefs= [...this._pendingRefs.entries()];
+		const pendingRefs = [...this._pendingRefs.entries()];
 		pendingRefs.forEach(([refId, refNode]) => {
 			const setData = setsByRefId[refId];
 
 			if (setData) {
-				const setId = getSetId(setData);
-				const type = getType(setData);
-				
 				this._pendingRefs.delete(refId);
-
-				refNode.setAttribute('data-set-id', setId);
-				refNode.setAttribute('data-set-type', type);
-				refNode.setAttribute('data-ref-state', 'complete');
-
-				this._setRefTiles(refNode, setData);
+				const parent = refNode.parentNode;
+				parent?.replaceChild(SetComponent(setData), refNode)
 			}
 		});
-	}
-
-	_setRefTiles (node, data) {
-		const items = getItems(data);
-
-		const tileList = TileList({
-			tiles: items
-		});
-
-		const origTileList = node.querySelector('.tiles-container');
-
-		node.replaceChild(tileList, origTileList);
-	}
-
-
-	_createPlacholderSet (refSet, options) {
-		if (!refSet) {
-			return;
-		}
-
-		const numTiles = options?.tiles?.num || 0;
-		const itemsContainer =refSet.querySelector('div.tiles-container');
-
-		// create item nodes
-		for (let i = 0; i < numTiles; i++) {
-			const itemNode = Tile();
-			itemsContainer.appendChild(itemNode);
-		}
-
-		itemsContainer.classList.add('animate-pulse');
-		refSet.setAttribute('data-ref-state', 'pending');
-		refSet.classList.remove('hidden');
-
-		return refSet
 	}
 
 	_focusTile (elem) {
@@ -180,8 +134,8 @@ class Home extends View {
 		this._focusedTile = elem;
 	}
 
-	_focusSet (elem) {
-		this._focusedSet = elem;
+	_focusContainer (elem) {
+		this._focusedContainer = elem;
 	}
 
 	_onArrowClick = (key) => {
@@ -204,42 +158,33 @@ class Home extends View {
 	}
 
 	_onArrowDown () {
-		let set;
-		let tile;
+		let container;
 
-		if (!this._focusedTile) {
+		if (!this._focusedContainer) {
 			// No Focused Elem exist so set the first one
-			const firstSet = this.root.querySelector('.collection .set');
-			const firstTile = firstSet?.querySelector('.tile');
-
-			set = firstSet;
-			tile = firstTile;
+			container = this.root.querySelector('[data-container-type]');
 		} else {
-			const nextSet = this._focusedSet.nextElementSibling;
-			const firstTile = nextSet?.querySelector('.tile');
-
-			set = nextSet;
-			tile = firstTile;
+			container = this._focusedContainer.nextElementSibling;
 		}
 
-		const isRefSet = set?.dataset?.setType === SET_REF_TYPE;
-		const refState = set?.dataset?.refState;
-		const isReady = refState !== 'initial' && refState !== 'pending';
+		const set = container?.querySelector('[data-set-id]');
+		const firstTile = set?.querySelector('[data-tile-content-id]');
 
-		if (isReady && set && tile) {
-			this._focusTile(tile);
-			this._focusSet(set);
+		if (firstTile) {
+			this._focusTile(firstTile);
+			this._focusContainer(container);
 		}
 	}
 
 	_onArrowUp () {
 		if (this._focusedTile) {
-			const previousSet = this._focusedSet.previousElementSibling;
-			const firstTile = previousSet?.querySelector('.tile');
+			const previousContainer = this._focusedContainer.previousElementSibling;
+			const set = previousContainer?.querySelector('[data-set-id]');
+			const firstTile = set?.querySelector('[data-tile-content-id]');
 
-			if (previousSet && firstTile) {
+			if (firstTile) {
 				this._focusTile(firstTile);
-				this._focusSet(previousSet);
+				this._focusContainer(previousContainer);
 			}
 		}
 	}

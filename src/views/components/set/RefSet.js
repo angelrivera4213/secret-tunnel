@@ -8,11 +8,10 @@ import { getTextContent } from '../../../selectors/text';
 // Components
 import Text from '../Text';
 
-export default function RefSet ({
+export default function RefSet (set, {
 	className,
 	attributes,
-	style,
-	set
+	style
 } = {}) {
 	// Get Data
 	const type = getType(set);
@@ -37,7 +36,8 @@ export default function RefSet ({
 		className: 'pb-3 pl-12'
 	});
 	const titleElem = Text({
-		className: 'pl-3 text-slate-50'
+		className: 'pl-3 text-slate-50',
+		text: titleContent
 	});
 
 	titleWrapper.appendChild(titleElem);
