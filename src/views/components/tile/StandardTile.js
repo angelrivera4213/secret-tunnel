@@ -1,33 +1,29 @@
 // Dependencies
 import cx from 'classnames';
-import { createElement, setAttributes } from '../lib/utils';
-
+import { createElement, setAttributes } from '../../lib/utils';
 
 // Selectors
-import { getContentId, getImage, getVideoText, imageKeyByType } from '../../selectors/video';
-import { getCollectionId } from '../../selectors/collection';
-import { getImageByKeyVersion, getUrl } from '../../selectors/image';
-import { getType } from '../../selectors/types';
-import { getTextByKey, getTextContent } from '../../selectors/text';
+import { getContentId, getImage, getText, imageKeyByType, getType } from '../../../selectors/content';
+import { getImageByKeyVersion, getUrl } from '../../../selectors/image';
+import { getTextByKey, getTextContent } from '../../../selectors/text';
 
 // Components
-import Image from './Image';
+import Image from '../Image';
 
-export default function Tile ({
+export default function Tile (content, {
 	className,
 	attributes,
-	style,
-	tile
+	style
 } = {}) {
-	const contentId = getContentId(tile) || getCollectionId(tile);
-	const type = getType(tile);
-	const text = getVideoText(tile);
+	const contentId = getContentId(content);
+	const type = getType(content);
+	const text = getText(content);
 	const title = getTextByKey(text, 'title');
 	const titleContent = getTextContent(title) || '';
 	const image = getImageByKeyVersion(
-		getImage(tile),
+		getImage(content),
 		'tile',
-		imageKeyByType[getType(tile)],
+		imageKeyByType[getType(content)],
 		'1.78'
 	);
 	const imageUrl = getUrl(image);
