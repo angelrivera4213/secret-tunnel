@@ -1,20 +1,9 @@
 import View from './lib/View';
 
 // Components
-import Tile from './components/Tile';
-import TileList from './components/TileList';
 import HomeCollection from './components/collection/HomeCollection';
 import EmptyTileList from './components/EmptyTileList';
 import SetComponent from './components/set';
-
-// Selectors
-import { getContainers, getCollectionId, getCollection } from '../selectors/collection';
-import { getSet, getType, TYPE_SHELF_CONTAINER } from '../selectors/container';
-import { getText, getItems, getSetId, getRefId } from '../selectors/set';
-import { getTextContent, getTextByKey } from '../selectors/text';
-import { getContentId, getImage, getVideoText, imageKeyByType } from '../selectors/video';
-import { getImageByKeyVersion, getUrl } from '../selectors/image';
-import { STANDARD_COLLECTION_TYPE, SET_REF_TYPE, CURATED_SET_TYPE} from '../selectors/types';
 
 // Utils
 import throttle from '../lib/throttle';

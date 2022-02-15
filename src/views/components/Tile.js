@@ -4,10 +4,8 @@ import { createElement, setAttributes } from '../lib/utils';
 
 
 // Selectors
-import { getContentId, getImage, getVideoText, imageKeyByType } from '../../selectors/video';
-import { getCollectionId } from '../../selectors/collection';
+import { getContentId, getImage, getText, imageKeyByType, getType } from '../../selectors/content';
 import { getImageByKeyVersion, getUrl } from '../../selectors/image';
-import { getType } from '../../selectors/types';
 import { getTextByKey, getTextContent } from '../../selectors/text';
 
 // Components
@@ -19,9 +17,10 @@ export default function Tile ({
 	style,
 	tile
 } = {}) {
-	const contentId = getContentId(tile) || getCollectionId(tile);
+	console.log('tile', tile);
+	const contentId = getContentId(tile);
 	const type = getType(tile);
-	const text = getVideoText(tile);
+	const text = getText(tile);
 	const title = getTextByKey(text, 'title');
 	const titleContent = getTextContent(title) || '';
 	const image = getImageByKeyVersion(
