@@ -1,5 +1,10 @@
 import View from './lib/View';
 
+// Components
+import Tile from './components/Tile';
+import TileList from './components/TileList';
+import HomeCollection from './components/collection/HomeCollection';
+
 // Selectors
 import { getContainers, getCollectionId, getCollection } from '../selectors/collection';
 import { getSet, getType, TYPE_SHELF_CONTAINER } from '../selectors/container';
@@ -27,18 +32,6 @@ class Home extends View {
 		this._pendingRefs = new Map();
 	}
 
-	_createButton ({
-		text,
-		className,
-	} = {}) {
-		const button = this.createElement('button', `rounded-full ${className}`);
-		const buttonText = this.createElement('span');
-		buttonText.textContent = text || '';
-		button.appendChild(buttonText)
-
-		return button;
-	}
-
 	getRoot () {
 		return this.root;
 	}
@@ -57,171 +50,9 @@ class Home extends View {
 	}
 
 	loadHome (data) {
-		this._collection = this._createCollectionNode(getCollection(data, 'StandardCollection'));
+		this._collection = HomeCollection(data);
 
 		this.root.appendChild(this._collection);
-	}
-
-
-	_createCollectionNode (collection) {
-		// Create element 
-		const element = this.createElement('div', 'collection');
-
-		// Get Data
-		const collectionId = getCollectionId(collection);
-		const containers = getContainers(collection) || [];
-
-		// Create Children Set
-		for (const container of containers) {
-			const set = getSet(container);
-			const setNode = this._createSetNode(set);
-
-			element.appendChild(setNode);
-		}
-
-		return element;
-	}
-
-	_createSetNode = (set) => {
-		// Get Data
-		const type = getType(set);
-		const text = getText(set);
-		const title = getTextByKey(text, 'title');
-		const titleContent = getTextContent(title) || '';
-
-		const setNode = this.createElement('div', 'set py-6');
-		const setId = getSetId(set);
-		const items = getItems(set) || [];
-
-		const titleWrapper = this.createElement('div', 'pb-3 pl-12');
-		const titleElem = this.createElement('span', 'pl-3 text-slate-50');
-		titleWrapper.appendChild(titleElem);
-		titleElem.innerText = titleContent;
-		setNode.appendChild(titleWrapper);
-		
-		const tileList = this._createTileList(items);
-
-		setNode.appendChild(tileList);
-
-
-		if (type === CURATED_SET_TYPE) {
-			setNode.setAttribute('data-set-type', type);
-			setNode.setAttribute('data-set-id', setId);
-		}
-
-		if (type === SET_REF_TYPE) {
-			const refId = getRefId(set);
-
-			setNode.classList.add('hidden');
-			setNode.setAttribute('data-set-type', type);
-			setNode.setAttribute('data-ref-id', refId);
-			setNode.setAttribute('data-ref-state', 'initial');
-		}
-
-		return setNode
-	}
-
-	_createTileList (items = [], options) {
-		const itemsContainer = this.createElement('div', 'tiles-container flex snap-x pl-12 overflow-auto');
-
-		itemsContainer.onkeydown = (e) => {
-			if (['ArrowUp', 'ArrowDown' , 'ArrowRight', 'ArrowLeft'].includes(e.key)) {
-				e.view.event.preventDefault();
-			}
-	    };
-
-		// create item nodes
-		for (const item of items) {
-			const itemNode = this._createTileNode(item);
-			itemsContainer.appendChild(itemNode);
-		}
-
-		return itemsContainer;
-	}
-
-	_createTileNode (video) {
-		const element = this.createElement('button', 'tile group snap-center p-[1.25vw] md:p-[1vw] lg:p-[0.75vw] focus:outline-none');
-		const contentId = getContentId(video) || getCollectionId(video);
-
-		const image = getImageByKeyVersion(
-			getImage(video),
-			'tile',
-			imageKeyByType[getType(video)],
-			'1.78'
-		);
-
-		const imageUrl = getUrl(image);
-		const text = getVideoText(video);
-		const title = getTextByKey(text, 'title');
-		const titleContent = getTextContent(title) || '';
-
-		element.setAttribute('data-tile-content-id', contentId);
-
-		const imageWrapper = this.createElement(
-			'div',
-			`
-			 relative tile-img-wrapper  min-h-full rounded-md
-			 bg-gradient-to-r from-zinc-600 to-zinc-700 
-			 w-[50vw] md:w-[25vw] lg:w-[20vw]
-			 h-[30vw] md:h-[15vw] lg:h-[12vw]
-			`
-		);
-
-		const hiddenImage = this._createImageNode({
-			className: 'invisible rounded-md h-full w-full fill',
-			src: imageUrl,
-			alt: titleContent
-		});
-		imageWrapper.appendChild(hiddenImage)
-
-		
-		const tileImageContainer = this.createElement(
-			'div',
-			`absolute inset-0 rounded-md h-full w-full group-focus:scale-105 group-hover:scale-105
-			 transition-[transform] duration-700 bg-gradient-to-r from-zinc-600 to-zinc-700
-			 after:content-[''] after:absolute after:z-10 after:bg-transparent after:border-0 after:border-slate-50 after:opacity-0
-			 after:transition-opacity after:duration-700
-			 after:box-border after:rounded-md after:w-full after:h-full
-			 after:group-focus:border-4 after:group-hover:border-4
-			 after:group-focus:opacity-80 after:group-hover:opacity-80
-			 after:inset-0
-			`
-		);
-		const tileImage = this._createImageNode({
-			className: 'rounded-md h-full w-full fill',
-			src: imageUrl,
-			alt: titleContent
-		});
-
-		tileImageContainer.appendChild(tileImage);
-
-		imageWrapper.appendChild(tileImageContainer);
-
-		element.appendChild(imageWrapper);
-
-		return element;
-	}
-
-	_createImageNode ({
-		className = '',
-		alt,
-		src
-	}) {
-		const imageNode = this.createElement(src ? 'img' : 'div', className);
-		
-		if (src) {
-			imageNode.src = src;
-
-			imageNode.onerror = () => {
-				imageNode?.parentNode?.removeChild?.(imageNode);
-			}
-		}
-
-		if (alt) {
-			tileImage.alt = alt;
-		}
-
-		return imageNode;
 	}
 
 	bindScrollBottom (handler) {
@@ -313,7 +144,9 @@ class Home extends View {
 	_setRefTiles (node, data) {
 		const items = getItems(data);
 
-		const tileList = this._createTileList(items);
+		const tileList = TileList({
+			tiles: items
+		});
 
 		const origTileList = node.querySelector('.tiles-container');
 
@@ -331,7 +164,7 @@ class Home extends View {
 
 		// create item nodes
 		for (let i = 0; i < numTiles; i++) {
-			const itemNode = this._createTileNode();
+			const itemNode = Tile();
 			itemsContainer.appendChild(itemNode);
 		}
 
