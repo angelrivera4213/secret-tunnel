@@ -21,3 +21,52 @@ export function isInViewport (node) {
         )
     )
 }
+
+export function createElement (tag, props) {
+    const className = props?.className || '';
+    const style = props?.style || {};
+    const attributes = props?.attributes || {};
+
+    const element = document.createElement(tag);
+
+    addClassName(element, className);
+    setAttributes(element, attributes);
+    setStyle(element, style);
+
+    return element;
+}
+
+export function addClassName (node, className) {
+    const classes = className?.replace(/\s+/g, ' ')?.split?.(' ').map(c => c.trim()).filter(c => !!c);
+    node?.classList?.add(...classes);
+}
+
+export function removeClassName (node, className) {
+    const classes = className?.replace(/\s+/g, ' ')?.split?.(' ').map(c => c.trim()).filter(c => !!c);
+    node?.classList?.remove(...classes);
+}
+
+export function setAttributes (node, attributes) {
+    attributes = attributes || {};
+
+    for (const key in attributes) {
+        if (attributes?.hasOwnProperty?.(key)) {
+            node?.setAttribute?.(key, attributes[key]);
+        }
+    }
+}
+
+export function setStyle (node, style) {
+    style = style || {};
+
+    for (const key in style) {
+        if (style?.hasOwnProperty?.(key) && node?.style) {
+            node.style[key] = style?.[key];
+        }
+    }
+}
+
+
+
+
+

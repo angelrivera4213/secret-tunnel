@@ -8,9 +8,10 @@ export default createReducerStore({
 			const data = payload?.data;
 
 			if (data) {
+				const collection = data[Object.keys(data)[0]];
 				return {
 					...state,
-					data: payload?.data || {}
+					data: collection
 				};
 			}
 

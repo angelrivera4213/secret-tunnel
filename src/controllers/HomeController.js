@@ -47,7 +47,6 @@ export class HomeController extends mix(Controller).with(KeyboardListenerMixin) 
 		if (this._view.lastSetInViewPort()) {
 			// Load more refs if current 
 			// viewport already contains all available sets
-			console.log('load more refs');
 			this._view.setupRefPlaceholders();
 		}
 	}
