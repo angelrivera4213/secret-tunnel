@@ -59,7 +59,6 @@ class Home extends View {
     lastSetInViewPort () {
         if (this.root) {
             const visibleSets = this.root.querySelectorAll('[data-set-id], [data-ref-id][data-ref-state="loading"]');
-            console.log('visibleSets', visibleSets);
             const lastVisibleSet = visibleSets.item(visibleSets.length - 1);
 
             // if last visible set is in the view port then call handler
