@@ -12,7 +12,7 @@ export default function TileList ({
 } = {}) {
     const itemsContainer = createElement('div', {
         attributes,
-        className: cx('tiles-container flex snap-x pl-12 overflow-auto', className),
+        className: cx('tiles-container scrollbar-hide flex snap-x pl-12 overflow-auto', className),
         style
     });
 
