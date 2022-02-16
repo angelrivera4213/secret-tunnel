@@ -1,14 +1,14 @@
 # secret-tunnel
 Secret tunnel! Secret tunnel! Through the mountains secret, secret, secret, secret tunnel! 😄
 
-## Visited Hosted App 
+## Visit Hosted App 
 https://secret-tunnel-rho.vercel.app/
 
 
 ## Notes
 - This application targets modern browsers (Chrome, Safari)
 - Has not been tested on (Edge or Firefox)
-- I have removed scrollbars the preference is to use arrow keys for navigation. Scrolling is still supported with touch pads (ie. Mac) and mouse wheel drag functionality. 
+- I have removed scrollbars as the preference is to use arrow keys for navigation. Scrolling is still supported with touch pads (ie. Mac) and mouse wheel drag functionality. 
 
 
 # Running Development Environment
@@ -56,6 +56,11 @@ $ open -a "Google Chrome" http://dev.secret-tunnel.com:3000
 <img src="https://user-images.githubusercontent.com/30299114/153274704-15d14b1a-a7f7-4af8-8c20-23ce8f13b9cb.gif" alt="Secret Tunnel!" width="100%"/>
 
 # Viewing Bundle Analyzer Report
+
+### View hosted report 
+https://secret-tunnel-rho.vercel.app/report.html
+
+### View on local instance
 
 ```
 $ npm run build
