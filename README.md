@@ -8,6 +8,7 @@ https://secret-tunnel-rho.vercel.app/
 ## Notes
 - This application targets modern browsers (Chrome, Safari)
 - Has not been tested on (Edge or Firefox)
+- I have removed scrollbars the preference is to use arrow keys for navigation. Scrolling is still supported with touch pads (ie. Mac) and mouse wheel drag functionality. 
 
 
 # Running Development Environment
