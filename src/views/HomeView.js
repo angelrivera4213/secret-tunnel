@@ -21,6 +21,7 @@ class Home extends View {
         });
         this._focusedElem = null;
         this._pendingRefs = new Map();
+        this.loadRefs = debounce(this._loadRefs, 30);
     }
 
     getRoot () {
@@ -53,7 +54,7 @@ class Home extends View {
             if (lastSetInViewPort) {
                 handler && handler();
             }
-        }, 200));
+        }, 30));
     }
 
     lastSetInViewPort () {
@@ -90,7 +91,6 @@ class Home extends View {
             const refId = refSet?.dataset?.refId;
 
             refSet?.appendChild?.(EmptyTileList());
-            removeClassName(refSet, 'hidden');
             setAttributes(refSet, {
                 'data-ref-state': 'loading'
             });
@@ -99,23 +99,32 @@ class Home extends View {
             refIds.push(refId);
         }
 
+        for (const refSet of refSetsToLoad) {
+            removeClassName(refSet, 'hidden');
+        }
+
         // call handler to make call for ref sets 
         this._setRefLoadListener?.({
             refIdList: refIds
         });
     } 
 
-    loadRefs (setsByRefId) {
+    _loadRefs = (setsByRefId) => {
         const pendingRefs = [...this._pendingRefs.entries()];
+        const replacementSets = new Map();
         pendingRefs.forEach(([refId, refNode]) => {
             const setData = setsByRefId[refId];
 
             if (setData) {
                 this._pendingRefs.delete(refId);
-                const parent = refNode.parentNode;
-                parent?.replaceChild(SetComponent(setData), refNode);
+                const setNode = SetComponent(setData);
+                replacementSets.set(refNode, setNode);
             }
         });
+
+        for (const [refNode, setNode] of replacementSets) {
+            refNode?.replaceWith?.(setNode);
+        }
     }
 
     _focusTile (elem) {
